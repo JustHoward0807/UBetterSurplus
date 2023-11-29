@@ -1,0 +1,8 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:44406",
+"LaunchCommand": "npm start",
+"WorkingDirectory": "/Users/howard/Documents/Github/UBetterSurplus/ClientApp/",
+"MaxTimeoutInSeconds": "120"
+}
+}

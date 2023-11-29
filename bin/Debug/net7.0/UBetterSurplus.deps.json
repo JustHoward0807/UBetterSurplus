@@ -1,0 +1,41 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "UBetterSurplus/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.SpaProxy": "7.0.7"
+        },
+        "runtime": {
+          "UBetterSurplus.dll": {}
+        }
+      },
+      "Microsoft.AspNetCore.SpaProxy/7.0.7": {
+        "runtime": {
+          "lib/net7.0/Microsoft.AspNetCore.SpaProxy.dll": {
+            "assemblyVersion": "7.0.7.0",
+            "fileVersion": "7.0.723.27408"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "UBetterSurplus/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.AspNetCore.SpaProxy/7.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-A+VpG2Xas4MxYyu5JttKv7JzxgkS7FdD+q2UoQlq9iyCMJrm0XGxbsWCNugR7AF4X51Y+aEZvk8UUBdmAym8Gw==",
+      "path": "microsoft.aspnetcore.spaproxy/7.0.7",
+      "hashPath": "microsoft.aspnetcore.spaproxy.7.0.7.nupkg.sha512"
+    }
+  }
+}
