@@ -1,5 +1,16 @@
 import React, {Component} from 'react';
-import {Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink} from 'reactstrap';
+import {
+    Button,
+    Collapse,
+    Modal,
+    ModalBody,
+    ModalHeader,
+    Navbar,
+    NavbarBrand,
+    NavbarToggler,
+    NavItem,
+    NavLink
+} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import './NavMenu.css';
 
@@ -11,7 +22,8 @@ export class NavMenu extends Component {
 
         this.toggleNavbar = this.toggleNavbar.bind(this);
         this.state = {
-            collapsed: true
+            collapsed: true,
+            modalOpen: false
         };
     }
 
@@ -20,7 +32,12 @@ export class NavMenu extends Component {
             collapsed: !this.state.collapsed
         });
     }
-/* d-md-flex flex-row-reverse*/
+    
+    toggleModal = () =>  {
+        this.setState({
+            modalOpen: !this.state.modalOpen
+        });
+    }
     render() {
         return (
             <header>
@@ -33,11 +50,24 @@ export class NavMenu extends Component {
                             <NavItem>
                                 <NavLink tag={Link} className="text-light nav-btn" to="/counter">ABOUT</NavLink>
                             </NavItem>
+                            {/*<NavItem>*/}
+                            {/*    <NavLink tag={Link} className="text-light nav-btn" to="/fetch-data">LOG</NavLink>*/}
+                            {/*</NavItem>*/}
+
                             <NavItem>
-                                <NavLink tag={Link} className="text-light nav-btn" to="/fetch-data">LOG</NavLink>
+                                <Button color="link" className="text-light nav-btn" onClick={this.toggleModal} data-toggle="modal">
+                                    LOG
+                                </Button>
                             </NavItem>
                         </ul>
                     </Collapse>
+
+                    <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal} fade={false}>
+                        <ModalHeader toggle={this.toggleModal}>Log Modal</ModalHeader>
+                        <ModalBody>
+                            This is your log modal content.
+                        </ModalBody>
+                    </Modal>
                 </Navbar>
             </header>
         );

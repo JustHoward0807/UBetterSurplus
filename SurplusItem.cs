@@ -26,8 +26,8 @@ public class SurplusItem
     public string Price { get; set; } = null!;
     
     // "Public Date": "null",
-    [JsonPropertyName("PublicDate")]
-    public string? PublicDate { get; set; }
+    [JsonPropertyName("Public Date")] 
+    public string? PublicDate { get; set; } = null!;
     
     // "Type": "CPU",
     [JsonPropertyName("Type")]

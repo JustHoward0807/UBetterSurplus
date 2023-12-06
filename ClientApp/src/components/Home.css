@@ -98,13 +98,16 @@
     background-color: var(--mainBgColor);
     color: white;
     width: 320px;
+    overflow: hidden;
+    height: 50px;
 }
 
 .dropdown-menu {
     background-color: var(--mainBgColor);
     --bs-dropdown-link-active-bg: transparent;
+    max-height: 400px;
+    overflow-y: auto;
 }
-
 
 .form-control, .input-group-text, .form-control:focus {
     color: white;
@@ -135,13 +138,14 @@
     font-family: "Orbitron", sans-serif;
     padding: 0;
     font-size: 14px;
-
+    
 }
 
 .card-body {
     color: white;
     background-color: var(--navbarBgColor);
     border-radius: 4px 4px 0 0;
+    height: fit-content;
 }
 
 .card-text {
@@ -155,6 +159,9 @@
     font-weight: normal;
     text-transform: uppercase;
     overflow: hidden;
+    white-space: nowrap;
+    height: 20px;
+    text-overflow: ellipsis;
 }
 
 .card {

@@ -40,12 +40,25 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color ease-in-out 150ms
+    transition: background-color ease-in-out 150ms;
+    --bs-btn-border-radius: 0;
 }
 
 .nav-btn:hover {
     background-color: #CC0000;
 }
+
+.modal-dialog {
+    height: 100vh;
+    display: flex;
+    /*justify-content: center;*/
+    align-items: center;
+}
+
+.modal {
+    height: fit-content;
+}
+
 
 /*html {
   font-size: 20px;
