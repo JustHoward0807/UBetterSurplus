@@ -51,14 +51,28 @@
 .modal-dialog {
     height: 100vh;
     display: flex;
-    /*justify-content: center;*/
+    
     align-items: center;
 }
 
+/*.modal-content {*/
+/*    background-color: #17191B;*/
+/*}*/
 .modal {
     height: fit-content;
 }
 
+.modal-footer {
+    justify-content: center;
+    border-top: 0;
+}
+.loginSignUpBtn {
+    background-color: #CC0000;
+}
+
+.loginSignUpBtn:hover {
+    background-color: #CC0000;
+}
 
 /*html {
   font-size: 20px;
@@ -71,5 +85,5 @@
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+  box-shadow: 0 .25rem .,75rem rgba(0, 0, 0, .05);
 }*/

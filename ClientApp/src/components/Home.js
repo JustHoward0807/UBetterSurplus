@@ -7,9 +7,8 @@ import {
     Dropdown,
     DropdownItem,
     DropdownMenu,
-    DropdownToggle,
-    InputGroup,
-    InputGroupText,
+    DropdownToggle, InputGroup,
+    InputGroupText, Modal, ModalBody, ModalFooter, ModalHeader,
     Row
 } from "reactstrap";
 import ProgressBar from 'react-bootstrap/ProgressBar';
@@ -17,6 +16,7 @@ import {Card, FormControl} from "react-bootstrap";
 import {BsSearch} from "react-icons/bs";
 
 
+//TODO: Do i rly need that much this state array like do i need to have surplusItems and a filteredSurplusItems?
 export class Home extends Component {
     static displayName = Home.name;
 
@@ -26,18 +26,32 @@ export class Home extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             dropdownCategoryOpen: false,
             dropdownSortOpen: false,
             dropdownCategoryText: "All",
-            dropdownSortText: "Sort",
+            dropdownSortText: "Sort (Default)",
             surplusItems: [],
             top10Items: [],
             loading: true,
+            filteredSurplusItems: [],
+            searchValue: "",
+            modalOpen: false
         };
+
     }
 
+//     _____                     _
+//    |_   _|___    __ _   __ _ | |  ___
+//      | | / _ \  / _` | / _` || | / _ \
+//      | || (_) || (_| || (_| || ||  __/
+//      |_| \___/  \__, | \__, ||_| \___|
+//                 |___/  |___/
+    toggleItemCardModal = () => {
+        this.setState({
+            modalOpen: !this.state.modalOpen
+        });
+    }
     categoryToggle = () => {
         this.setState((prevState) => ({
             dropdownCategoryOpen: !prevState.dropdownCategoryOpen,
@@ -50,20 +64,75 @@ export class Home extends Component {
         }));
     }
 
-    handleCategoryClick = (item) => {
-        console.log(`Clicked: ${item}`);
-        this.setState({
-            dropdownCategoryText: item
-        });
+//     _   _                 _ _
+//    | | | | __ _ _ __   __| | | ___
+//    | |_| |/ _` | '_ \ / _` | |/ _ \
+//    |  _  | (_| | | | | (_| | |  __/
+//    |_| |_|\__,_|_| |_|\__,_|_|\___|
+    
+    handlePurchase = () => {
+    //     TODO: handle purchase logic here
+    //     send a request to server with username and everything.
+    }
+    handleCategoryClick = (itemType) => {
+        console.log(`Clicked: ${itemType}`);
+        if (itemType === "All") {
+            this.setState({
+                dropdownCategoryText: itemType,
+                filteredSurplusItems: this.state.surplusItems,
+                searchValue: ""
+            });
+        } else {
+            const filteredItems = this.state.surplusItems.filter(item =>
+                item["Type"].toLowerCase().includes(itemType.toLowerCase())
+            );
+
+            this.setState({
+                dropdownCategoryText: itemType,
+                filteredSurplusItems: filteredItems,
+                searchValue: ""
+            });
+        }
+
+
     };
 
     handleSortClick = (item) => {
         console.log(`Clicked: ${item}`);
-        this.setState({
-            dropdownSortText: item
-        });
+        if (item === "priceLowToHigh") {
+            const sortedSurplusItems = [...this.state.filteredSurplusItems].sort((a, b) => a["Price"] - b["Price"]);
+            this.setState({
+                filteredSurplusItems: sortedSurplusItems,
+                dropdownSortText: "Price Low - High"
+            });
+        } else if (item === "priceHighToLow") {
+            const sortedSurplusItems = [...this.state.filteredSurplusItems].sort((a, b) => b["Price"] - a["Price"]);
+            this.setState({
+                filteredSurplusItems: sortedSurplusItems,
+                dropdownSortText: "Price High - Low"
+            });
+        }
+
     };
 
+    handleSearch = (searchItem) => {
+        console.log(this.state.filteredSurplusItems.length);
+        const filteredItems = this.state.surplusItems.filter(item =>
+            item["Description"].toLowerCase().includes(searchItem.toLowerCase())
+        );
+        this.setState({
+            filteredSurplusItems: filteredItems,
+            dropdownCategoryText: "All",
+            searchValue: searchItem
+        });
+    }
+
+    
+    //   ____                _           
+    //  |  _ \ ___ _ __   __| | ___ _ __ 
+    //  | |_) / _ \ '_ \ / _` |/ _ \ '__|
+    //  |  _ <  __/ | | | (_| |  __/ |   
+    //  |_| \_\___|_| |_|\__,_|\___|_|   
     static renderCategoriesDisplaySection(items) {
         const categoryEntries = Object.entries(items);
 
@@ -85,6 +154,12 @@ export class Home extends Component {
     dropDownType(items) {
         const uniqueTypes = new Set();
 
+        const defaultItem = (
+            <DropdownItem key="default" onClick={() => this.handleCategoryClick("All")}>
+                All
+            </DropdownItem>
+        );
+
         const typeElements = Object.entries(items).map(([key, value]) => {
             if (!uniqueTypes.has(value.Type)) {
                 uniqueTypes.add(value.Type);
@@ -99,14 +174,15 @@ export class Home extends Component {
             return null;
         });
 
-        return <>{typeElements}</>;
+        // Prepend the default item
+        const dropdownItems = [defaultItem, ...typeElements];
+
+        return <>{dropdownItems}</>;
     }
 
     renderSurplusItemCards(items) {
         const cards = Object.entries(items).map(([key, value]) => (
-
-            <ItemCard key={key} itemTitle={value["Description"]} itemPrice={value["Price"]}
-                      publicDate={value["Public Date"]}/>
+            <this.ItemCard key={key} item={value}/>
         ));
 
 
@@ -122,7 +198,8 @@ export class Home extends Component {
         let dropDownType = this.state.loading ? <p><em>Loading...</em></p> : this.dropDownType(this.state.surplusItems);
 
         let itemCards = this.state.loading ?
-            <p><em>Loading...</em></p> : this.renderSurplusItemCards(this.state.surplusItems);
+            <p><em>Loading...</em>
+            </p> : this.renderSurplusItemCards(this.state.filteredSurplusItems);
 
 
         return (<>
@@ -165,7 +242,9 @@ export class Home extends Component {
                                     <FormControl
                                         type="text"
                                         placeholder="Search"
+                                        value={this.state.searchValue}
                                         aria-describedby="inputGroupPrepend"
+                                        onChange={(e) => this.handleSearch(e.target.value)}
                                     />
                                 </InputGroup>
                             </div>
@@ -198,6 +277,17 @@ export class Home extends Component {
                 <Container className="itemSection rounded shadow d-flex flex-wrap justify-content-around">
                     {itemCards}
                 </Container>
+
+                <Modal isOpen={this.state.modalOpen} toggle={this.toggleItemCardModal} fade={false}>
+                    <ModalHeader toggle={this.toggleItemCardModal}>Confirm purchase</ModalHeader>
+                    <ModalBody>
+                        Are you sure you want to continue purchase?
+                    </ModalBody>
+                    <ModalFooter className="purchaseModal">
+                        <Button type="button" data-dismiss="modal" onClick={this.toggleItemCardModal}>Close</Button>
+                        <Button type="button" className="loginSignUpBtn" onClick={this.handlePurchase}>Purchase</Button>
+                    </ModalFooter>
+                </Modal>
             </>
         );
     }
@@ -223,25 +313,34 @@ export class Home extends Component {
 
         const topCategoryCounts = Object.fromEntries(topCategories);
 
-        this.setState({surplusItems: data, loading: false, top10Items: topCategoryCounts}, () => {
-            console.log(this.state.surplusItems);
+        this.setState({
+            surplusItems: data,
+            loading: false,
+            top10Items: topCategoryCounts,
+            filteredSurplusItems: data
+        }, () => {
+            // console.log(this.state.surplusItems);
             // console.log(this.state.top10Items);
         });
     }
+
+
+    ItemCard = ({item}) => {
+        return (
+            <Card className="text-center rounded shadow mt-4" onClick={() => this.toggleItemCardModal()}>
+                <Card.Body>
+                    <Card.Title>{item["Description"]}</Card.Title>
+                    {/*If the public date is unknown, show unknown*/}
+                    <Card.Text>Public Date: {item["Public Date"]}</Card.Text>
+                </Card.Body>
+                {/*If the public date is not specify, make the bg color grey (cannot buy) and text show Call to verify*/}
+                <Card.Footer>${item["Price"]}</Card.Footer>
+            </Card>
+        );
+    };
+
 }
 
-const ItemCard = ({itemTitle, publicDate, itemPrice}) => {
-    return (
-        <Card className="text-center rounded shadow mt-4">
-            <Card.Body>
-                <Card.Title>{itemTitle}</Card.Title>
-                {/*If the public date is unknown, show unknown*/}
-                <Card.Text>Public Date: {publicDate}</Card.Text>
-            </Card.Body>
-            {/*If the public date is not specify, make the bg color grey (cannot buy) and text show Call to verify*/}
-            <Card.Footer>{itemPrice}</Card.Footer>
-        </Card>
-    );
-};
+
 
 

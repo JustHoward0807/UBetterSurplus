@@ -5,7 +5,6 @@ import {BrowserRouter} from 'react-router-dom';
 import App from './App';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
-import {StrictMode} from 'react';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
@@ -13,9 +12,7 @@ const root = createRoot(rootElement);
 
 root.render(
     <BrowserRouter basename={baseUrl}>
-        <StrictMode>
             <App/>
-        </StrictMode>
     </BrowserRouter>);
 
 // If you want your app to work offline and load faster, you can change

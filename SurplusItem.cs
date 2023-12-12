@@ -21,7 +21,7 @@ public class SurplusItem
     public string Description { get; set; } = null!;
 
 
-    // "Price": "$200.00",
+    // "Price": "200.00",
     [JsonPropertyName("Price")]
     public string Price { get; set; } = null!;
     

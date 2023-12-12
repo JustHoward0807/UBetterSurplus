@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {
     Button,
-    Collapse,
+    Collapse, Form, FormGroup,
     Modal,
-    ModalBody,
+    ModalBody, ModalFooter,
     ModalHeader,
     Navbar,
     NavbarBrand,
@@ -13,7 +13,7 @@ import {
 } from 'reactstrap';
 import {Link} from 'react-router-dom';
 import './NavMenu.css';
-
+import {FormControl} from "react-bootstrap";
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
@@ -32,18 +32,23 @@ export class NavMenu extends Component {
             collapsed: !this.state.collapsed
         });
     }
-    
-    toggleModal = () =>  {
+
+    toggleModal = () => {
         this.setState({
             modalOpen: !this.state.modalOpen
         });
+    }
+
+    handleSignInLogIn = () => {
+    //     TODO: make a request to the server
+    //     If success then refresh the page if user logged, else show the error message.
     }
     render() {
         return (
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white shadow mb-3"
                         container>
-                    <NavbarBrand href="/" >UBetterSurplus</NavbarBrand>
+                    <NavbarBrand href="/">UBetterSurplus</NavbarBrand>
                     <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
                     <Collapse className="d-sm-inline-flex " isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav">
@@ -55,7 +60,8 @@ export class NavMenu extends Component {
                             {/*</NavItem>*/}
 
                             <NavItem>
-                                <Button color="link" className="text-light nav-btn" onClick={this.toggleModal} data-toggle="modal">
+                                <Button color="link" className="text-light nav-btn" onClick={this.toggleModal}
+                                        data-toggle="modal">
                                     LOG
                                 </Button>
                             </NavItem>
@@ -63,10 +69,28 @@ export class NavMenu extends Component {
                     </Collapse>
 
                     <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal} fade={false}>
-                        <ModalHeader toggle={this.toggleModal}>Log Modal</ModalHeader>
+                        <ModalHeader toggle={this.toggleModal}>SIGN UP / LOG IN</ModalHeader>
                         <ModalBody>
-                            This is your log modal content.
+                            <Form>
+                                <FormGroup controlId="exampleForm.ControlInput1">
+                                    <FormControl
+                                        placeholder="Username"
+                                    />
+                                </FormGroup>
+                                <FormGroup
+                                    className="mb-3"
+                                    controlId="exampleForm.ControlTextarea1"
+                                >
+                                    <FormControl
+                                        type="password"
+                                        placeholder="Password"
+                                    />
+                                </FormGroup>
+                            </Form>
                         </ModalBody>
+                        <ModalFooter>
+                            <Button type="button" className="loginSignUpBtn" onClick={this.handleSignInLogIn}>SIGN UP / LOG IN</Button>
+                        </ModalFooter>
                     </Modal>
                 </Navbar>
             </header>

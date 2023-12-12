@@ -164,10 +164,18 @@
     text-overflow: ellipsis;
 }
 
+.purchaseModal {
+    justify-content: right !important;
+}
+
 .card {
     width: 320px;
     height: 90px;
     background-color: transparent;
     --bs-card-inner-border-radius: calc(4px);
+    cursor: pointer;
+}
 
+.btn-close {
+    display: none;
 }

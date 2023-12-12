@@ -19,6 +19,8 @@ public class SurplusItemController
     [HttpGet]
     public async Task<IEnumerable<SurplusItem>> Get()
     {
+        //TODO: Maybe not getting from json here. could change it to getting from database.
+        
         const string fileName = "output.json";
         await using var openStream = File.OpenRead(fileName);
 
