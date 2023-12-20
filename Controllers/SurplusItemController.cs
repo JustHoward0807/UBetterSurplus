@@ -8,11 +8,9 @@ namespace UBetterSurplus.Controllers;
 public class SurplusItemController
 {
     private readonly ILogger<SurplusItemController> _logger;
-
     public SurplusItemController(ILogger<SurplusItemController> logger)
     {
         _logger = logger;
-        
     }
     
     
