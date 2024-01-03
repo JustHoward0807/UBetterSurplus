@@ -14,6 +14,7 @@ import {
 import {Link} from 'react-router-dom';
 import './NavMenu.css';
 import {FormControl} from "react-bootstrap";
+
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
@@ -23,7 +24,9 @@ export class NavMenu extends Component {
         this.toggleNavbar = this.toggleNavbar.bind(this);
         this.state = {
             collapsed: true,
-            modalOpen: false
+            modalOpen: false,
+            username: '',
+            password: '',
         };
     }
 
@@ -39,10 +42,60 @@ export class NavMenu extends Component {
         });
     }
 
-    handleSignInLogIn = () => {
-    //     TODO: make a request to the server
-    //     If success then refresh the page if user logged, else show the error message.
+    handleUsernameInputChange = (e) => {
+        const {value} = e.target;
+        this.setState({
+            username: value,
+        });
+    };
+
+    handlePasswordInputChange = (e) => {
+        const {value} = e.target;
+        this.setState({
+            password: value,
+        });
+    };
+
+    handleSignInLogIn = async () => {
+        //     TODO: make a request to the server
+        //     If success then refresh the page if user logged, else show the error message.
+        const {username, password} = this.state;
+        // Perform your logic with username and password here
+        console.log('Username:', username);
+        console.log('Password:', password);
+        const result = await this.requestUserResult();
+        if (result.ok) {
+            // window.location.reload();
+
+        } else {
+            console.error('Error:', result.status, result.statusText);
+        }
     }
+
+    async requestUserResult() {
+        const url = 'http://localhost:5064/api/RegisterOrLogin';
+        const data = {
+            // Your request payload data goes here
+            // For example, if you need to send username and password:
+            Name: 'Howard',
+            Password: '123',
+        };
+
+        const response = await fetch(url, {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+
+        });
+
+        console.log(response);
+        return response;
+    }
+
     render() {
         return (
             <header>
@@ -74,7 +127,10 @@ export class NavMenu extends Component {
                             <Form>
                                 <FormGroup controlId="exampleForm.ControlInput1">
                                     <FormControl
+                                        type="text"
                                         placeholder="Username"
+                                        value={this.state.username}
+                                        onChange={this.handleUsernameInputChange}
                                     />
                                 </FormGroup>
                                 <FormGroup
@@ -84,12 +140,15 @@ export class NavMenu extends Component {
                                     <FormControl
                                         type="password"
                                         placeholder="Password"
+                                        value={this.state.password}
+                                        onChange={this.handlePasswordInputChange}
                                     />
                                 </FormGroup>
                             </Form>
                         </ModalBody>
                         <ModalFooter>
-                            <Button type="button" className="loginSignUpBtn" onClick={this.handleSignInLogIn}>SIGN UP / LOG IN</Button>
+                            <Button type="button" className="loginSignUpBtn" onClick={this.handleSignInLogIn}>SIGN UP /
+                                LOG IN</Button>
                         </ModalFooter>
                     </Modal>
                 </Navbar>

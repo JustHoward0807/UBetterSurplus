@@ -15,17 +15,16 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import {Card, FormControl} from "react-bootstrap";
 import {BsSearch} from "react-icons/bs";
 
-
 //TODO: Do i rly need that much this state array like do i need to have surplusItems and a filteredSurplusItems?
 export class Home extends Component {
     static displayName = Home.name;
-
     componentDidMount() {
         this.populateSurplusItemsData();
     }
 
     constructor(props) {
         super(props);
+        console.log(props);
         this.state = {
             dropdownCategoryOpen: false,
             dropdownSortOpen: false,
@@ -36,8 +35,9 @@ export class Home extends Component {
             loading: true,
             filteredSurplusItems: [],
             searchValue: "",
-            modalOpen: false
+            modalOpen: false,
         };
+        
 
     }
 

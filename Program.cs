@@ -28,16 +28,18 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-app.UseRouting();
-
 app.UseCors(options => options
-    .WithOrigins(new [] {"http://localhost:3000"})
+    .WithOrigins(new [] {"https://localhost:44406", "http://localhost:3000", "http://localhost:5064"})
     .AllowCredentials()
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
+
+// app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+
+
 
 app.MapControllerRoute(
     name: "default",

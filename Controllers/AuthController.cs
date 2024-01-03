@@ -46,8 +46,11 @@ public class AuthController : Controller
 
         Response.Cookies.Append("jwt", jwt, new CookieOptions
         {
-            HttpOnly = true
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None
         });
+
         return Ok(new
         {
             message = "Success Login"
