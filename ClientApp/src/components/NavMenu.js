@@ -18,6 +18,40 @@ import {FormControl} from "react-bootstrap";
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
+    componentDidMount() {
+        this.checkUser();
+    }
+
+    async checkUser() {
+        try {
+            const url = 'http://localhost:5064/api/User';
+
+            const response = await fetch(url, {
+                credentials: 'include',
+                method: 'GET',
+                headers: {
+                    'Access-Control-Allow-Credentials': 'true',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+            });
+
+            console.log(response);
+
+            if (response.status === 200 || response.status === 204) {
+                this.setState({
+                    isLogin: true
+                });
+            }
+        } catch (error) {
+            this.setState({
+                isLogin: false
+            });
+
+            console.error('Error:', error.message);
+        }
+    }
+
     constructor(props) {
         super(props);
 
@@ -27,7 +61,13 @@ export class NavMenu extends Component {
             modalOpen: false,
             username: '',
             password: '',
+            isLogin: false,
+            usernameValidHint: "",
+            passwordValidHint: "",
+            passwordIncorrect: ""
         };
+
+
     }
 
     toggleNavbar() {
@@ -36,12 +76,18 @@ export class NavMenu extends Component {
         });
     }
 
-    toggleModal = () => {
-        this.setState({
-            modalOpen: !this.state.modalOpen
-        });
-    }
+    toggleSignInSignUpModal = async () => {
+        if (this.state.isLogin) {
+            //     TODO: Handle sign out
+            await this.handleSignOut();
+        } else {
+            this.setState({
+                modalOpen: !this.state.modalOpen
+            });
+        }
 
+    }
+    
     handleUsernameInputChange = (e) => {
         const {value} = e.target;
         this.setState({
@@ -56,37 +102,85 @@ export class NavMenu extends Component {
         });
     };
 
-    handleSignInLogIn = async () => {
+
+    handleSignOut = async () => {
+
+        // TODO: Test it with when no cookie jwt is found
+        const url = 'http://localhost:5064/api/Logout';
+        const response = await fetch(url, {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Credentials': 'true',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            }
+
+        });
+
+        console.log(response);
+        window.location.reload();
+    }
+
+    handleSignIn = async () => {
         //     TODO: make a request to the server
         //     If success then refresh the page if user logged, else show the error message.
         const {username, password} = this.state;
-        // Perform your logic with username and password here
+
         console.log('Username:', username);
         console.log('Password:', password);
-        const result = await this.requestUserResult();
-        if (result.ok) {
-            // window.location.reload();
-
+        if (username.length >= 5 ) {
+            this.setState({
+                showValid: "hideInvalid",
+            });
         } else {
-            console.error('Error:', result.status, result.statusText);
+            this.setState({
+                showValid: "showInvalid",
+            });
         }
+
+
+        if (password.length >= 5 ) {
+            this.setState({
+                passwordValidHint: "hideInvalid",
+            });
+        } else {
+            this.setState({
+                passwordValidHint: "showInvalid",
+            });
+        }
+        
+        if (username.length >= 5 && password.length >= 5) {
+            
+            const result = await this.requestUserResult(username, password);
+            if (result.ok) {
+                window.location.reload();
+            } else {
+                if (!result.ok && result.statusText === "Bad Request") {
+                    this.setState({
+                        passwordIncorrect: "showInvalid",
+                    });
+                }
+                console.error('Error:', result.status, result.statusText);
+            }
+        } 
+        
     }
 
-    async requestUserResult() {
+    async requestUserResult(username, password) {
         const url = 'http://localhost:5064/api/RegisterOrLogin';
         const data = {
-            // Your request payload data goes here
-            // For example, if you need to send username and password:
-            Name: 'Howard',
-            Password: '123',
+            Name: username,
+            Password: password,
         };
 
         const response = await fetch(url, {
             credentials: 'include',
             method: 'POST',
             headers: {
-                Accept: 'application/json',
+                'Access-Control-Allow-Credentials': 'true',
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             },
             body: JSON.stringify(data),
 
@@ -113,29 +207,34 @@ export class NavMenu extends Component {
                             {/*</NavItem>*/}
 
                             <NavItem>
-                                <Button color="link" className="text-light nav-btn" onClick={this.toggleModal}
+                                <Button color="link" className="text-light nav-btn"
+                                        onClick={this.toggleSignInSignUpModal}
                                         data-toggle="modal">
-                                    LOG
+                                    {this.state.isLogin ? "SIGN OUT" : "LOG"}
                                 </Button>
                             </NavItem>
                         </ul>
                     </Collapse>
 
-                    <Modal isOpen={this.state.modalOpen} toggle={this.toggleModal} fade={false}>
-                        <ModalHeader toggle={this.toggleModal}>SIGN UP / LOG IN</ModalHeader>
+                    <Modal isOpen={this.state.modalOpen} toggle={this.toggleSignInSignUpModal} fade={false}>
+                        <ModalHeader toggle={this.toggleSignInSignUpModal}>SIGN UP / LOG IN</ModalHeader>
                         <ModalBody>
-                            <Form>
-                                <FormGroup controlId="exampleForm.ControlInput1">
+                            <Form >
+                                <FormGroup controlId="validationCustom01">
                                     <FormControl
                                         type="text"
                                         placeholder="Username"
                                         value={this.state.username}
                                         onChange={this.handleUsernameInputChange}
+
                                     />
+                                    <FormControl.Feedback className={this.state.showValid} type="invalid">
+                                        Please provide a valid username (length >= 5).
+                                    </FormControl.Feedback>
                                 </FormGroup>
                                 <FormGroup
                                     className="mb-3"
-                                    controlId="exampleForm.ControlTextarea1"
+                                    controlId="validationCustom02"
                                 >
                                     <FormControl
                                         type="password"
@@ -143,12 +242,19 @@ export class NavMenu extends Component {
                                         value={this.state.password}
                                         onChange={this.handlePasswordInputChange}
                                     />
+                                    <FormControl.Feedback className={this.state.passwordValidHint} type="invalid">
+                                        Please provide a valid password (length >= 5).
+                                    </FormControl.Feedback>
                                 </FormGroup>
+                                <Button type="button" className="loginSignUpBtn" onClick={this.handleSignIn}>SIGN UP /
+                                    LOG IN</Button>
+                                <FormControl.Feedback className={this.state.passwordIncorrect} type="invalid">
+                                    Wrong password.
+                                </FormControl.Feedback>
                             </Form>
                         </ModalBody>
                         <ModalFooter>
-                            <Button type="button" className="loginSignUpBtn" onClick={this.handleSignInLogIn}>SIGN UP /
-                                LOG IN</Button>
+
                         </ModalFooter>
                     </Modal>
                 </Navbar>

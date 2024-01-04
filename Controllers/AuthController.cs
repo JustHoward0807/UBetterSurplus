@@ -34,7 +34,24 @@ public class AuthController : Controller
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
-            return Created("Success Register", _repository.Create(user));
+            var userCreated = _repository.Create(user);
+            var _jwt = _jwtService.Generate(userCreated.Id);
+
+            Response.Cookies.Append("jwt", _jwt, new CookieOptions
+            {
+                // Bc of this, so I cannot access cookie in client side which is good for security.
+                // I struggle here a lot since I keep trying to print out cookie in front-end.
+                HttpOnly = true, 
+                Secure = true,
+                SameSite = SameSiteMode.None
+            
+            });
+            
+            return Ok(new
+            {
+                message = "Success Register"
+            });
+            // return Created("Success Register", _repository.Create(user));
         }
 
         if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
@@ -46,9 +63,12 @@ public class AuthController : Controller
 
         Response.Cookies.Append("jwt", jwt, new CookieOptions
         {
-            HttpOnly = true,
+            // Bc of this, so I cannot access cookie in client side which is good for security.
+            // I struggle here a lot since I keep trying to print out cookie in front-end.
+            HttpOnly = true, 
             Secure = true,
             SameSite = SameSiteMode.None
+            
         });
 
         return Ok(new
@@ -83,8 +103,12 @@ public class AuthController : Controller
     public IActionResult Logout()
     {
         
-        Response.Cookies.Delete("jwt");
-
+        Response.Cookies.Delete("jwt",  new CookieOptions
+        {
+            HttpOnly = true, 
+            Secure = true,
+            SameSite = SameSiteMode.None
+        });
         return Ok(new
         {
             message = "Success delete cookies"

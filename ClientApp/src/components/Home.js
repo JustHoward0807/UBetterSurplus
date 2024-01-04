@@ -20,11 +20,11 @@ export class Home extends Component {
     static displayName = Home.name;
     componentDidMount() {
         this.populateSurplusItemsData();
+        
     }
 
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             dropdownCategoryOpen: false,
             dropdownSortOpen: false,
@@ -36,6 +36,7 @@ export class Home extends Component {
             filteredSurplusItems: [],
             searchValue: "",
             modalOpen: false,
+            
         };
         
 
@@ -323,6 +324,9 @@ export class Home extends Component {
             // console.log(this.state.top10Items);
         });
     }
+    
+    
+    
 
 
     ItemCard = ({item}) => {
