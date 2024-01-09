@@ -74,6 +74,13 @@
     background-color: #CC0000;
 }
 
+.showInvalid {
+    display: block;
+}
+
+.hideInvalid {
+    display: none;
+}
 /*html {
   font-size: 20px;
 }
