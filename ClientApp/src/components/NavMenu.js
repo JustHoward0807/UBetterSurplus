@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {
-    Button,
-    Collapse, Form, FormGroup,
+    Button, Collapse, Form, FormGroup,
     Modal,
     ModalBody, ModalFooter,
     ModalHeader,
@@ -14,12 +13,15 @@ import {
 import {Link} from 'react-router-dom';
 import './NavMenu.css';
 import {FormControl} from "react-bootstrap";
+import Dropdown from 'react-bootstrap/Dropdown';
+import Cookies from 'js-cookie';
 
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
-    componentDidMount() {
-        this.checkUser();
+    async componentDidMount() {
+        
+        await this.checkUser();
     }
 
     async checkUser() {
@@ -64,9 +66,10 @@ export class NavMenu extends Component {
             isLogin: false,
             usernameValidHint: "",
             passwordValidHint: "",
-            passwordIncorrect: ""
+            passwordIncorrect: "",
+            usernameLogged: ''
         };
-
+        
 
     }
 
@@ -78,7 +81,6 @@ export class NavMenu extends Component {
 
     toggleSignInSignUpModal = async () => {
         if (this.state.isLogin) {
-            //     TODO: Handle sign out
             await this.handleSignOut();
         } else {
             this.setState({
@@ -87,7 +89,7 @@ export class NavMenu extends Component {
         }
 
     }
-    
+
     handleUsernameInputChange = (e) => {
         const {value} = e.target;
         this.setState({
@@ -119,6 +121,7 @@ export class NavMenu extends Component {
         });
 
         console.log(response);
+        Cookies.remove('username');
         window.location.reload();
     }
 
@@ -129,7 +132,7 @@ export class NavMenu extends Component {
 
         console.log('Username:', username);
         console.log('Password:', password);
-        if (username.length >= 5 ) {
+        if (username.length >= 5) {
             this.setState({
                 showValid: "hideInvalid",
             });
@@ -140,7 +143,7 @@ export class NavMenu extends Component {
         }
 
 
-        if (password.length >= 5 ) {
+        if (password.length >= 5) {
             this.setState({
                 passwordValidHint: "hideInvalid",
             });
@@ -149,11 +152,12 @@ export class NavMenu extends Component {
                 passwordValidHint: "showInvalid",
             });
         }
-        
+
         if (username.length >= 5 && password.length >= 5) {
-            
+
             const result = await this.requestUserResult(username, password);
             if (result.ok) {
+                Cookies.set('username', this.state.username);
                 window.location.reload();
             } else {
                 if (!result.ok && result.statusText === "Bad Request") {
@@ -163,8 +167,8 @@ export class NavMenu extends Component {
                 }
                 console.error('Error:', result.status, result.statusText);
             }
-        } 
-        
+        }
+
     }
 
     async requestUserResult(username, password) {
@@ -207,11 +211,13 @@ export class NavMenu extends Component {
                             {/*</NavItem>*/}
 
                             <NavItem>
-                                <Button color="link" className="text-light nav-btn"
-                                        onClick={this.toggleSignInSignUpModal}
-                                        data-toggle="modal">
-                                    {this.state.isLogin ? "SIGN OUT" : "LOG"}
-                                </Button>
+                                {this.state.isLogin ? this.LoggedUserDropDown() :
+                                    <Button color="link" className="text-light nav-btn"
+                                            onClick={this.toggleSignInSignUpModal}
+                                            data-toggle="modal">
+                                        {this.state.isLogin ? Cookies.get('username') + " !" : "LOG"}
+                                    </Button>
+                                }
                             </NavItem>
                         </ul>
                     </Collapse>
@@ -219,8 +225,8 @@ export class NavMenu extends Component {
                     <Modal isOpen={this.state.modalOpen} toggle={this.toggleSignInSignUpModal} fade={false}>
                         <ModalHeader toggle={this.toggleSignInSignUpModal}>SIGN UP / LOG IN</ModalHeader>
                         <ModalBody>
-                            <Form >
-                                <FormGroup controlId="validationCustom01">
+                            <Form>
+                                <FormGroup>
                                     <FormControl
                                         type="text"
                                         placeholder="Username"
@@ -234,7 +240,6 @@ export class NavMenu extends Component {
                                 </FormGroup>
                                 <FormGroup
                                     className="mb-3"
-                                    controlId="validationCustom02"
                                 >
                                     <FormControl
                                         type="password"
@@ -260,5 +265,24 @@ export class NavMenu extends Component {
                 </Navbar>
             </header>
         );
+    }
+
+    LoggedUserDropDown() {
+
+        return (
+            <Dropdown>
+                <Dropdown.Toggle id="LoggedUserToggle" className="text-light nav-btn">
+                    {Cookies.get('username') + " !"}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="LoggedUserMenu">
+                    <Dropdown.Item className="LoggedUserItem" href="/history">History</Dropdown.Item>
+                    <Dropdown.Item className="LoggedUserItem" href="/" >Tracked Items</Dropdown.Item>
+                    <Dropdown.Item  onClick={this.toggleSignInSignUpModal} className="LoggedUserItem">Logout</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+        );
+
+
     }
 }
