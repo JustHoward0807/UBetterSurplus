@@ -15,13 +15,13 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import {Card, FormControl} from "react-bootstrap";
 import {BsSearch} from "react-icons/bs";
 
-
 //TODO: Do i rly need that much this state array like do i need to have surplusItems and a filteredSurplusItems?
 export class Home extends Component {
     static displayName = Home.name;
 
     componentDidMount() {
         this.populateSurplusItemsData();
+
     }
 
     constructor(props) {
@@ -36,8 +36,10 @@ export class Home extends Component {
             loading: true,
             filteredSurplusItems: [],
             searchValue: "",
-            modalOpen: false
+            modalOpen: false,
+
         };
+
 
     }
 
@@ -69,10 +71,10 @@ export class Home extends Component {
 //    | |_| |/ _` | '_ \ / _` | |/ _ \
 //    |  _  | (_| | | | | (_| | |  __/
 //    |_| |_|\__,_|_| |_|\__,_|_|\___|
-    
+
     handlePurchase = () => {
-    //     TODO: handle purchase logic here
-    //     send a request to server with username and everything.
+        //     TODO: handle purchase logic here
+        //     send a request to server with username and everything.
     }
     handleCategoryClick = (itemType) => {
         console.log(`Clicked: ${itemType}`);
@@ -93,7 +95,6 @@ export class Home extends Component {
                 searchValue: ""
             });
         }
-
 
     };
 
@@ -127,7 +128,7 @@ export class Home extends Component {
         });
     }
 
-    
+
     //   ____                _           
     //  |  _ \ ___ _ __   __| | ___ _ __ 
     //  | |_) / _ \ '_ \ / _` |/ _ \ '__|
@@ -256,7 +257,6 @@ export class Home extends Component {
                                 <Dropdown isOpen={this.state.dropdownSortOpen} toggle={this.sortToggle}>
                                     <DropdownToggle caret>{this.state.dropdownSortText}</DropdownToggle>
                                     <DropdownMenu>
-                                        {/*<DropdownItem header>Header</DropdownItem>*/}
                                         <DropdownItem onClick={() => this.handleSortClick("priceLowToHigh")}>Price Low -
                                             High</DropdownItem>
                                         <DropdownItem onClick={() => this.handleSortClick("priceHighToLow")}>Price High
@@ -327,7 +327,7 @@ export class Home extends Component {
 
     ItemCard = ({item}) => {
         return (
-            <Card className="text-center rounded shadow mt-4" onClick={() => this.toggleItemCardModal()}>
+            <Card className="text-center rounded shadow m-4" onClick={() => this.toggleItemCardModal()}>
                 <Card.Body>
                     <Card.Title>{item["Description"]}</Card.Title>
                     {/*If the public date is unknown, show unknown*/}

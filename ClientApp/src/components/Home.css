@@ -64,6 +64,53 @@
     margin-bottom: 5px;
 }
 
+#LoggedUserToggle {
+    background-color: transparent;
+    border-color: transparent;
+    /*width: inherit !important;*/
+}
+
+#LoggedUserToggle:hover {
+    background-color: var(--main-red);
+}
+
+.dropdown {
+    width: inherit !important;
+}
+
+.LoggedUserItem, .LoggedUserMenu {
+    width: inherit !important;
+    height: fit-content !important;
+    background-color: var(--navbarBgColor) !important;
+}
+
+.LoggedUserItem:hover {
+    background-color: var(--main-red) !important;
+    color: white;
+}
+
+.LoggedUserMenu {
+    width: inherit !important;
+    border-color: var(--main-red);
+    border-style: solid none none none;
+    border-radius: 0;
+    border-width: 3px;
+
+
+
+}
+.LoggedUserMenu:hover {
+    
+    color: blue !important;
+    --bs-dropdown-link-hover-color: var(--main-red) !important;
+    --bs-dropdown-link-hover-bg: var(--main-red) !important;
+    --bs-nav-link-hover-color: var(--main-red) !important;
+    --bs-link-hover-color: var(--main-red) !important;
+    --bs-navbar-brand-hover-color: var(--main-red) !important;
+    --bs-navbar-hover-color: var(--main-red) !important;
+}
+
+
 /* filter section */
 
 .filterColumn {
