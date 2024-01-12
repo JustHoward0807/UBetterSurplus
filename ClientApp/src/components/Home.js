@@ -14,13 +14,15 @@ import {
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import {Card, FormControl} from "react-bootstrap";
 import {BsSearch} from "react-icons/bs";
+import Cookies from "js-cookie";
 
 //TODO: Do i rly need that much this state array like do i need to have surplusItems and a filteredSurplusItems?
 export class Home extends Component {
     static displayName = Home.name;
 
-    componentDidMount() {
-        this.populateSurplusItemsData();
+    async componentDidMount() {
+        // TODO: Do i rly need to set time out?
+        setTimeout(() => {  this.populateSurplusItemsData(); }, 1500);
 
     }
 
@@ -37,7 +39,7 @@ export class Home extends Component {
             filteredSurplusItems: [],
             searchValue: "",
             modalOpen: false,
-
+            selectedItem: ""
         };
 
 
@@ -49,9 +51,10 @@ export class Home extends Component {
 //      | || (_) || (_| || (_| || ||  __/
 //      |_| \___/  \__, | \__, ||_| \___|
 //                 |___/  |___/
-    toggleItemCardModal = () => {
+    toggleItemCardModal = (item) => {
         this.setState({
-            modalOpen: !this.state.modalOpen
+            modalOpen: !this.state.modalOpen,
+            selectedItem: item,
         });
     }
     categoryToggle = () => {
@@ -72,9 +75,41 @@ export class Home extends Component {
 //    |  _  | (_| | | | | (_| | |  __/
 //    |_| |_|\__,_|_| |_|\__,_|_|\___|
 
-    handlePurchase = () => {
-        //     TODO: handle purchase logic here
-        //     send a request to server with username and everything.
+    handlePurchase =  async () => {
+        if (Cookies.get('username') == null) {
+            alert("Please sign in first to make a purchase");
+            this.toggleItemCardModal();
+        }
+        else {
+            await this.requestPurchase();
+            
+            alert("Purchase success");
+            window.location.reload();
+        }
+
+    }
+    
+    async requestPurchase() {
+        const url = 'http://localhost:5064/SurplusItem/Purchase';
+        const data = {
+            Uid: 38,
+            Sid: this.state.selectedItem["Surplus Number"],
+        };
+
+        const response = await fetch(url, {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Credentials': 'true',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify(data),
+
+        });
+
+        console.log(response);
+        return response;
     }
     handleCategoryClick = (itemType) => {
         console.log(`Clicked: ${itemType}`);
@@ -293,7 +328,7 @@ export class Home extends Component {
     }
 
     async populateSurplusItemsData() {
-        // TODO: do sth here for the display section array
+        
         const response = await fetch('surplusitem');
         const data = await response.json();
 
@@ -327,7 +362,7 @@ export class Home extends Component {
 
     ItemCard = ({item}) => {
         return (
-            <Card className="text-center rounded shadow m-4" onClick={() => this.toggleItemCardModal()}>
+            <Card className="text-center rounded shadow m-4" onClick={() => this.toggleItemCardModal(item)}>
                 <Card.Body>
                     <Card.Title>{item["Description"]}</Card.Title>
                     {/*If the public date is unknown, show unknown*/}

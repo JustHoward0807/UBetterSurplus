@@ -19,9 +19,9 @@ import Cookies from 'js-cookie';
 export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
-    async componentDidMount() {
+    componentDidMount() {
         
-        await this.checkUser();
+        this.checkUser();
     }
 
     async checkUser() {
