@@ -172,6 +172,7 @@
 
 /* Item section*/
 
+
 .itemSection {
     height: fit-content;
     background-color: var(--mainBgColor);
@@ -185,7 +186,15 @@
     font-family: "Orbitron", sans-serif;
     padding: 0;
     font-size: 14px;
+    cursor: pointer;
+}
+
+.price-footer {
+    background-color: var(--main-red);
     
+}
+.price-footer.unknown:hover {
+    background-color: grey; 
 }
 
 .card-body {
@@ -195,10 +204,13 @@
     height: fit-content;
 }
 
-.card-text {
+.card-subtitle {
     font-size: 10px;
     color: rgba(255, 255, 255, 0.6);
-    
+}
+.card-text  {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .card-title {
@@ -217,10 +229,9 @@
 
 .card {
     width: 320px;
-    height: 90px;
+    height: 95px;
     background-color: transparent;
     --bs-card-inner-border-radius: calc(4px);
-    cursor: pointer;
 }
 
 .btn-close {

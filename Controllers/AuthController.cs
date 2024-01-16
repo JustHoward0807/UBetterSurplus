@@ -6,7 +6,8 @@ using UBetterSurplus.Models;
 
 namespace UBetterSurplus.Controllers;
 
-[Route("api")]
+// [Route("api")]
+[Route("[controller]")]
 [ApiController]
 public class AuthController : Controller
 {

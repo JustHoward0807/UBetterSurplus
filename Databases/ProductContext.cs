@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using UBetterSurplus.Models;
 
 namespace UBetterSurplus.Databases;
 

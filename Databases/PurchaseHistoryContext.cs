@@ -12,4 +12,5 @@ public class PurchaseHistoryContext : DbContext
     }
     
     public DbSet<PurchaseHistory> PurchaseHistories { get; set; }
+    public DbSet<SurplusItem> SurplusItems { get; set; }
 }

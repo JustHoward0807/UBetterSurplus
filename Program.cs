@@ -50,9 +50,17 @@ app.UseRouting();
 
 
 
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+    name: "surplusitem",
+    pattern: "surplusitem/{controller=SurplusItem}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "auth",
+    pattern: "api/{controller=Auth}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
 

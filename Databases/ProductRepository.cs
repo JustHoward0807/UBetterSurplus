@@ -3,17 +3,18 @@ namespace UBetterSurplus.Databases;
 public class ProductRepository : IProductRepository
 {
     
-    private readonly ProductContext _context;
-    
-    public ProductRepository(ProductContext context)
+    private readonly ProductContext _productContext;
+    private readonly PurchaseHistoryContext _purchaseHistoryContext;
+    public ProductRepository(ProductContext productContext, PurchaseHistoryContext purchaseHistoryContext)
     {
-        _context = context;
+        _productContext = productContext;
+        _purchaseHistoryContext = purchaseHistoryContext;
     }
     public IEnumerable<SurplusItem> GetAllSurplusItems()
     {
         try
         {
-            return _context.SurplusItems.Where(item => item.Qty > 0).ToList();
+            return _productContext.SurplusItems.Where(item => item.Qty > 0).ToList();
         }
         catch (Exception e)
         {
@@ -22,4 +23,6 @@ public class ProductRepository : IProductRepository
         }
         
     }
+    
+    
 }

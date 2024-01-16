@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
-using Google.Protobuf.WellKnownTypes;
 using UBetterSurplus.Models;
 
 namespace UBetterSurplus.Databases;
@@ -26,7 +24,7 @@ public class PurchaseRepository : IPurchaseRepository
             {
                 Sid = surplusNumber,
                 Uid = uid,
-                PurchaseTime = DateTime.UtcNow
+                PurchaseTime = DateTime.Now
             };
 
             _purchaseHistoryContext.PurchaseHistories.Add(purchase);
@@ -55,5 +53,29 @@ public class PurchaseRepository : IPurchaseRepository
             Console.WriteLine(e);
             return null;
         }
+    }
+
+    public IEnumerable<PurchaseHistory> GetPurchaseHistory(int uid)
+    {
+        // var matchingSurplusItems = _purchaseHistoryContext.SurplusItems
+        //     .Where(item => _purchaseHistoryContext.PurchaseHistories.Any(ph => ph.Uid == uid && ph.Sid == item.SurplusNumber)).ToList();
+
+
+            var matchingSurplusItems = _purchaseHistoryContext.SurplusItems
+                .Where(item => _purchaseHistoryContext.PurchaseHistories.Any(ph => ph.Uid == uid && ph.Sid == item.SurplusNumber))
+                .Select(item => new PurchaseHistory()
+                {
+                    SurplusItem = item,
+                    PurchaseTime = _purchaseHistoryContext.PurchaseHistories
+                        .Where(ph => ph.Uid == uid && ph.Sid == item.SurplusNumber)
+                        .Select(ph => ph.PurchaseTime)
+                        .FirstOrDefault(),
+                })
+                .ToList();
+            
+
+        return matchingSurplusItems;
+        
+
     }
 }

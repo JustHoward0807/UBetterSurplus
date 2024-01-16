@@ -15,6 +15,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 import {Card, FormControl} from "react-bootstrap";
 import {BsSearch} from "react-icons/bs";
 import Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 //TODO: Do i rly need that much this state array like do i need to have surplusItems and a filteredSurplusItems?
 export class Home extends Component {
@@ -22,7 +23,9 @@ export class Home extends Component {
 
     async componentDidMount() {
         // TODO: Do i rly need to set time out?
-        setTimeout(() => {  this.populateSurplusItemsData(); }, 1500);
+        setTimeout(() => {
+            this.populateSurplusItemsData();
+        }, 1500);
 
     }
 
@@ -39,11 +42,20 @@ export class Home extends Component {
             filteredSurplusItems: [],
             searchValue: "",
             modalOpen: false,
-            selectedItem: ""
+            selectedItem: "",
+            hoveredCardId: null,
         };
 
 
     }
+
+    handleMouseEnter = (cardId) => {
+        this.setState({hoveredCardId: cardId});
+    };
+
+    handleMouseLeave = () => {
+        this.setState({hoveredCardId: null});
+    };
 
 //     _____                     _
 //    |_   _|___    __ _   __ _ | |  ___
@@ -75,24 +87,23 @@ export class Home extends Component {
 //    |  _  | (_| | | | | (_| | |  __/
 //    |_| |_|\__,_|_| |_|\__,_|_|\___|
 
-    handlePurchase =  async () => {
+    handlePurchase = async () => {
         if (Cookies.get('username') == null) {
             alert("Please sign in first to make a purchase");
             this.toggleItemCardModal();
-        }
-        else {
+        } else {
             await this.requestPurchase();
-            
+
             alert("Purchase success");
             window.location.reload();
         }
 
     }
-    
+
     async requestPurchase() {
-        const url = 'http://localhost:5064/SurplusItem/Purchase';
+        const url = 'surplusitem/Purchase';
         const data = {
-            Uid: 38,
+            Username: Cookies.get('username'),
             Sid: this.state.selectedItem["Surplus Number"],
         };
 
@@ -111,6 +122,7 @@ export class Home extends Component {
         console.log(response);
         return response;
     }
+
     handleCategoryClick = (itemType) => {
         console.log(`Clicked: ${itemType}`);
         if (itemType === "All") {
@@ -146,6 +158,25 @@ export class Home extends Component {
             this.setState({
                 filteredSurplusItems: sortedSurplusItems,
                 dropdownSortText: "Price High - Low"
+            });
+        } else if (item === "ableToBuy") {
+            const sortedSurplusItems = [...this.state.filteredSurplusItems].sort((a, b) => {
+                const dateA = a["Public Date"] === "null" ? null : new Date(a["Public Date"]);
+                const dateB = b["Public Date"] === "null" ? null : new Date(b["Public Date"]);
+
+                if (dateA === null && dateB !== null) {
+                    return 1;
+                } else if (dateA !== null && dateB === null) {
+                    return -1;
+                } else if (dateA === null && dateB === null) {
+                    return 0;
+                }
+
+                return dateA - dateB;
+            });
+            this.setState({
+                filteredSurplusItems: sortedSurplusItems,
+                dropdownSortText: "Able to buy now"
             });
         }
 
@@ -218,7 +249,7 @@ export class Home extends Component {
 
     renderSurplusItemCards(items) {
         const cards = Object.entries(items).map(([key, value]) => (
-            <this.ItemCard key={key} item={value}/>
+            <this.ItemCard key={key} item={value} cardId={key}/>
         ));
 
 
@@ -228,18 +259,31 @@ export class Home extends Component {
 
     render() {
         let displaySectionContents = this.state.loading
-            ? <p><em>Loading...</em></p>
+            ? <Spinner
+                variant="light"
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+            />
             : Home.renderCategoriesDisplaySection(this.state.top10Items);
 
         let dropDownType = this.state.loading ? <p><em>Loading...</em></p> : this.dropDownType(this.state.surplusItems);
 
         let itemCards = this.state.loading ?
-            <p><em>Loading...</em>
-            </p> : this.renderSurplusItemCards(this.state.filteredSurplusItems);
+            <Spinner
+                variant="light"
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+            /> : this.renderSurplusItemCards(this.state.filteredSurplusItems);
 
 
         return (<>
-                <Container className="displaySection rounded shadow d-flex justify-content-start flex-wrap">
+                <Container className="displaySection rounded shadow d-flex justify-content-around align-content-around flex-wrap">
 
                     {displaySectionContents}
                     {/*Maximum display: 10*/}
@@ -297,6 +341,7 @@ export class Home extends Component {
                                         <DropdownItem onClick={() => this.handleSortClick("priceHighToLow")}>Price High
                                             -
                                             Low</DropdownItem>
+                                        <DropdownItem onClick={() => this.handleSortClick("ableToBuy")}>Able to buy now</DropdownItem>
                                     </DropdownMenu>
                                 </Dropdown>
 
@@ -328,7 +373,7 @@ export class Home extends Component {
     }
 
     async populateSurplusItemsData() {
-        
+
         const response = await fetch('surplusitem');
         const data = await response.json();
 
@@ -360,16 +405,27 @@ export class Home extends Component {
     }
 
 
-    ItemCard = ({item}) => {
+    /**
+     * If the public date is unknown, show unknown
+     * If the public date is not specify, make the bg color grey (cannot buy) and text show Call to verify
+     * @param item
+     * @param cardId
+     * @returns {Element}
+     */
+    ItemCard = ({item, cardId}) => {
+        const publicDateAvailable = item["Public Date"] === "null" ? "Unknown" : item["Public Date"];
+        const isHovered = this.state.hoveredCardId === cardId;
         return (
-            <Card className="text-center rounded shadow m-4" onClick={() => this.toggleItemCardModal(item)}>
+            <Card className="text-center rounded shadow m-4" onMouseEnter={() => this.handleMouseEnter(cardId)}
+                  onMouseLeave={this.handleMouseLeave}>
                 <Card.Body>
                     <Card.Title>{item["Description"]}</Card.Title>
-                    {/*If the public date is unknown, show unknown*/}
-                    <Card.Text>Public Date: {item["Public Date"]}</Card.Text>
+                    <Card.Subtitle>Public Date: {publicDateAvailable}</Card.Subtitle>
+                    <div className="card-text">Availability: <Card.Text style={{ fontWeight: "bold", textDecoration: "underline", fontSize:"15px" }}>{item["Qty"]}</Card.Text></div>
                 </Card.Body>
-                {/*If the public date is not specify, make the bg color grey (cannot buy) and text show Call to verify*/}
-                <Card.Footer>${item["Price"]}</Card.Footer>
+
+                <Card.Footer className={`price-footer ${publicDateAvailable === "Unknown" ? "unknown" : ""}`}
+                             onClick={publicDateAvailable === "Unknown" ? () => alert("This item is unavailable, please call 801.581.7917 to verify") : () => this.toggleItemCardModal(item)}>{publicDateAvailable === "Unknown" && isHovered ? "Call to verify" : `$${item["Price"]}`}</Card.Footer>
             </Card>
         );
     };
