@@ -12,8 +12,10 @@ import {
     Row
 } from "reactstrap";
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import {Card, FormControl} from "react-bootstrap";
-import {BsSearch} from "react-icons/bs";
+import {Card, FormControl, ModalTitle} from "react-bootstrap";
+// import {BsSearch} from "react-icons/bs";
+import { Search24Regular, Bookmark28Regular } from "@fluentui/react-icons";
+
 import Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -38,12 +40,14 @@ export class Home extends Component {
             dropdownSortText: "Sort (Default)",
             surplusItems: [],
             top10Items: [],
+            topCategoryAvailableCounts: [],
             loading: true,
             filteredSurplusItems: [],
             searchValue: "",
             modalOpen: false,
             selectedItem: "",
             hoveredCardId: null,
+            
         };
 
 
@@ -87,6 +91,9 @@ export class Home extends Component {
 //    |  _  | (_| | | | | (_| | |  __/
 //    |_| |_|\__,_|_| |_|\__,_|_|\___|
 
+    handleBookmark = async () => {
+        console.log("hello");
+    }
     handlePurchase = async () => {
         if (Cookies.get('username') == null) {
             alert("Please sign in first to make a purchase");
@@ -200,22 +207,31 @@ export class Home extends Component {
     //  | |_) / _ \ '_ \ / _` |/ _ \ '__|
     //  |  _ <  __/ | | | (_| |  __/ |   
     //  |_| \_\___|_| |_|\__,_|\___|_|   
-    static renderCategoriesDisplaySection(items) {
+    static renderCategoriesDisplaySection(items, availableItems) {
         const categoryEntries = Object.entries(items);
+        const categoryAvailableEntries = Object.entries(availableItems);
 
         return (
             <>
-                {categoryEntries.map(([category, count]) => (
-                    <div key={category} className="itemBox">
-                        <div className="d-flex item justify-content-between align-items-center">
-                            <p className="itemTitle">{category}</p>
-                            <p className="itemCount">{count}</p>
+                {categoryEntries.map(([category, count]) => {
+                    const matchingAvailableEntry = categoryAvailableEntries.find(([availableCategory]) => availableCategory === category);
+                    const availableCount = matchingAvailableEntry ? matchingAvailableEntry[1] : 0;
+
+                    return (
+                        <div key={category} className="itemBox">
+                            <div className="d-flex item justify-content-between align-items-center">
+                                <p className="itemTitle">{category}</p>
+                                <p className="itemCount">{parseInt(availableCount.toString())}</p>
+                            </div>
+                            <ProgressBar className="shadow" min={0} max={count} now={parseInt(availableCount.toString())}/>
                         </div>
-                        <ProgressBar className="shadow" min={0} max={count} now={count}/>
-                    </div>
-                ))}
+                    );
+                })}
             </>
         );
+        
+ 
+
     }
 
     dropDownType(items) {
@@ -267,7 +283,7 @@ export class Home extends Component {
                 role="status"
                 aria-hidden="true"
             />
-            : Home.renderCategoriesDisplaySection(this.state.top10Items);
+            : Home.renderCategoriesDisplaySection(this.state.top10Items, this.state.topCategoryAvailableCounts);
 
         let dropDownType = this.state.loading ? <p><em>Loading...</em></p> : this.dropDownType(this.state.surplusItems);
 
@@ -318,7 +334,7 @@ export class Home extends Component {
                         <Col sm className="filterColumn">
                             <div className="filterSearch">
                                 <InputGroup>
-                                    <InputGroupText id="inputGroupPrepend"><BsSearch/></InputGroupText>
+                                    <InputGroupText id="inputGroupPrepend"><Search24Regular/></InputGroupText>
                                     <FormControl
                                         type="text"
                                         placeholder="Search"
@@ -359,11 +375,16 @@ export class Home extends Component {
                 </Container>
 
                 <Modal isOpen={this.state.modalOpen} toggle={this.toggleItemCardModal} fade={false}>
-                    <ModalHeader toggle={this.toggleItemCardModal}>Confirm purchase</ModalHeader>
+                    <ModalHeader toggle={this.toggleItemCardModal}>
+                        Confirm purchase
+                        <div onClick={this.handleBookmark}><Bookmark28Regular /></div>
+                    </ModalHeader>
+                    
                     <ModalBody>
                         Are you sure you want to continue purchase?
                     </ModalBody>
                     <ModalFooter className="purchaseModal">
+                        <Button className="btn-primary" type="button" data-dismiss="modal" onClick={this.toggleItemCardModal}>Track</Button>
                         <Button type="button" data-dismiss="modal" onClick={this.toggleItemCardModal}>Close</Button>
                         <Button type="button" className="loginSignUpBtn" onClick={this.handlePurchase}>Purchase</Button>
                     </ModalFooter>
@@ -378,26 +399,38 @@ export class Home extends Component {
         const data = await response.json();
 
         const categoryCounts = {};
-
+        const categoryAvailableCounts = {};
+        
         data.forEach(item => {
             const category = item["Category"];
+            const qty = item["Qty"];
             categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+            if (qty > 0) {
+                categoryAvailableCounts[category] = (categoryAvailableCounts[category] || 0) + 1;
+            }
         });
 
 
         const categoryEntries = Object.entries(categoryCounts);
-
+        const categoryAvailableEntries = Object.entries(categoryAvailableCounts);
+        
         categoryEntries.sort((a, b) => b[1] - a[1]);
-
+        categoryAvailableEntries.sort((a, b) => b[1] - a[1]);
+        
         const topCategories = categoryEntries.slice(0, 10);
-
+        const topAvailableCategories = categoryAvailableEntries.slice(0, 10);
+        
         const topCategoryCounts = Object.fromEntries(topCategories);
-
+        const topCategoryAvailableCounts = Object.fromEntries(topAvailableCategories);
+        
+        console.log(topCategoryCounts);
+        console.log(topCategoryAvailableCounts);
         this.setState({
             surplusItems: data,
             loading: false,
             top10Items: topCategoryCounts,
-            filteredSurplusItems: data
+            filteredSurplusItems: data,
+            topCategoryAvailableCounts: topCategoryAvailableCounts
         }, () => {
             // console.log(this.state.surplusItems);
             // console.log(this.state.top10Items);
@@ -413,21 +446,24 @@ export class Home extends Component {
      * @returns {Element}
      */
     ItemCard = ({item, cardId}) => {
-        const publicDateAvailable = item["Public Date"] === "null" ? "Unknown" : item["Public Date"];
-        const isHovered = this.state.hoveredCardId === cardId;
-        return (
-            <Card className="text-center rounded shadow m-4" onMouseEnter={() => this.handleMouseEnter(cardId)}
-                  onMouseLeave={this.handleMouseLeave}>
-                <Card.Body>
-                    <Card.Title>{item["Description"]}</Card.Title>
-                    <Card.Subtitle>Public Date: {publicDateAvailable}</Card.Subtitle>
-                    <div className="card-text">Availability: <Card.Text style={{ fontWeight: "bold", textDecoration: "underline", fontSize:"15px" }}>{item["Qty"]}</Card.Text></div>
-                </Card.Body>
+        if (item["Qty"] > 0) {
+            const publicDateAvailable = item["Public Date"] === "null" ? "Unknown" : item["Public Date"];
+            const isHovered = this.state.hoveredCardId === cardId;
+            return (
+                <Card className="text-center rounded shadow m-4" onMouseEnter={() => this.handleMouseEnter(cardId)}
+                      onMouseLeave={this.handleMouseLeave}>
+                    <Card.Body>
+                        <Card.Title>{item["Description"]}</Card.Title>
+                        <Card.Subtitle>Public Date: {publicDateAvailable}</Card.Subtitle>
+                        {/*<div className="card-text">Availability: <Card.Text style={{ fontWeight: "bold", textDecoration: "underline", fontSize:"15px" }}>{item["Qty"]}</Card.Text></div>*/}
+                    </Card.Body>
 
-                <Card.Footer className={`price-footer ${publicDateAvailable === "Unknown" ? "unknown" : ""}`}
-                             onClick={publicDateAvailable === "Unknown" ? () => alert("This item is unavailable, please call 801.581.7917 to verify") : () => this.toggleItemCardModal(item)}>{publicDateAvailable === "Unknown" && isHovered ? "Call to verify" : `$${item["Price"]}`}</Card.Footer>
-            </Card>
-        );
+                    <Card.Footer className={`price-footer ${publicDateAvailable === "Unknown" ? "unknown" : ""}`}
+                                 onClick={publicDateAvailable === "Unknown" ? () => alert("This item is unavailable, please call 801.581.7917 to verify") : () => this.toggleItemCardModal(item)}>{publicDateAvailable === "Unknown" && isHovered ? "Call to verify" : `$${item["Price"]}`}</Card.Footer>
+                </Card>
+            );
+        }
+        
     };
 
 }

@@ -6,13 +6,13 @@ import React from 'react';
  * @returns {Element}
  * @constructor
  */
-const TrackedItems = () => {
+function TrackedItems() {
     return (
         <div>
             <h1>Hello, there!</h1>
             <p>This is a functional component.</p>
         </div>
     );
-};
+}
 
 export default TrackedItems;

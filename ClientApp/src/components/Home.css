@@ -113,6 +113,12 @@
 
 /* filter section */
 
+.modal-title {
+    justify-content: space-between;
+    width: 100%;
+    display: flex;
+}
+
 .filterColumn {
     height: fit-content;
     overflow: visible;

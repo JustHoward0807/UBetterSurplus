@@ -14,7 +14,7 @@ public class ProductRepository : IProductRepository
     {
         try
         {
-            return _productContext.SurplusItems.Where(item => item.Qty > 0).ToList();
+            return _productContext.SurplusItems.ToList();
         }
         catch (Exception e)
         {

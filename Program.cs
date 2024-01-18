@@ -22,10 +22,12 @@ builder.Services.AddCors();
 builder.Services.AddDbContext<ProductContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
 builder.Services.AddDbContext<UserContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
 builder.Services.AddDbContext<PurchaseHistoryContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
+builder.Services.AddDbContext<TrackedItemsContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<ITrackedItemsRepository, TrackedItemsRepository>();
 builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
