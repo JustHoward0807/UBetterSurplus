@@ -7,9 +7,9 @@ export class History extends Component {
     static displayName = History.name;
 
     async componentDidMount() {
-        setTimeout(() => {
-            this.populatePurchaseSurplusItemsData();
-        }, 1000);
+        setTimeout(async () => {
+           await this.populatePurchaseSurplusItemsData();
+        }, 1500);
     }
 
     constructor(props) {
@@ -59,7 +59,7 @@ export class History extends Component {
         try {
             const response = await fetch('surplusitem/PurchaseHistory');
             const data = await response.json();
-
+            
             this.setState({
                 purchasedItems: data,
                 loading: false,

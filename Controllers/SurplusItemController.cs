@@ -72,7 +72,7 @@ public class SurplusItemController : Controller
 
             var items = _purchaseRepository.GetPurchaseHistory(user.Id);
 
-            
+
             return items;
         }
 
