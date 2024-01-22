@@ -15,6 +15,7 @@ public class SurplusItemController : Controller
     private readonly ILogger<SurplusItemController> _logger;
     private readonly IProductRepository _productRepository;
     private readonly IPurchaseRepository _purchaseRepository;
+    private readonly ITrackedItemsRepository _trackedItemsRepository;
     private readonly IUserRepository _userRepository;
     private readonly JwtService _jwtService;
 
@@ -22,7 +23,8 @@ public class SurplusItemController : Controller
         IProductRepository productRepository,
         IPurchaseRepository purchaseRepository,
         IUserRepository userRepository,
-        JwtService jwtService
+        JwtService jwtService,
+        ITrackedItemsRepository trackedItemsRepository
     )
     {
         _logger = logger;
@@ -30,7 +32,8 @@ public class SurplusItemController : Controller
         _purchaseRepository = purchaseRepository;
         _userRepository = userRepository;
         _jwtService = jwtService;
-        
+        _trackedItemsRepository = trackedItemsRepository;
+
     }
 
 
@@ -98,4 +101,42 @@ public class SurplusItemController : Controller
             message = "Purchase Successful"
         });
     }
+    
+    [HttpPost("ItemTrackCheck")]
+    public IActionResult ItemTrackCheck(TrackDto dto)
+    {
+        var uId = _userRepository.GetByUsername(dto.Username)!.Id;
+        var hasItem = _trackedItemsRepository.TrackCheck(dto.Sid, uId);
+        if (hasItem)
+        {
+            return Ok(new
+            {
+                message = "Item Tracked"
+            });
+        }
+        else
+        {
+            return NotFound(new { message = "Item not tracked" });
+        }
+    }
+    
+    [HttpPost("Track")]
+    public IActionResult Track(TrackDto dto)
+    {
+        var uId = _userRepository.GetByUsername(dto.Username)!.Id;
+        var trackItem = _trackedItemsRepository.Track(dto.Sid, uId);
+        if (trackItem == null)
+        {
+            return BadRequest(new { message = "Cannot Track" });
+            
+        }
+        else
+        {
+            return Ok(new
+            {
+                message = "Item Tracked"
+            });
+        }
+    }
+    
 }

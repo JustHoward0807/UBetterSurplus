@@ -12,10 +12,8 @@ import {
     Row
 } from "reactstrap";
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import {Card, FormControl, ModalTitle} from "react-bootstrap";
-// import {BsSearch} from "react-icons/bs";
-import { Search24Regular, Bookmark28Regular } from "@fluentui/react-icons";
-
+import {Card, FormControl} from "react-bootstrap";
+import {Search24Regular, Bookmark28Regular, Bookmark28Filled} from "@fluentui/react-icons";
 import Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -29,6 +27,12 @@ export class Home extends Component {
             this.populateSurplusItemsData();
         }, 1500);
 
+    }
+
+    async componentDidUpdate(prevProps, prevState, snapshot) {
+        if (this.state.modalOpen && this.state.selectedItem !== prevState.selectedItem) {
+            await this.renderTrackedIcon();
+        }
     }
 
     constructor(props) {
@@ -47,7 +51,7 @@ export class Home extends Component {
             modalOpen: false,
             selectedItem: "",
             hoveredCardId: null,
-            
+            trackedIconContent: null
         };
 
 
@@ -91,14 +95,71 @@ export class Home extends Component {
 //    |  _  | (_| | | | | (_| | |  __/
 //    |_| |_|\__,_|_| |_|\__,_|_|\___|
 
-    handleBookmark = async () => {
-        console.log("hello");
+    handleBookmark = async (trackIconOption) => {
+        if (trackIconOption === "Track") {
+            this.setState({
+                trackedIconContent: <Spinner
+                    variant="dark"
+                    as="span"
+                    animation="border"
+                    size="md"
+                    role="status"
+                    aria-hidden="true"
+                />
+            })
+            
+            const requestTrack = await this.requestTrack();
+            
+            if (requestTrack.status === 200) {
+                this.setState({
+                    trackedIconContent: <div onClick={() => this.handleBookmark("unTrack")}><Bookmark28Filled/></div>
+                })
+            } else {
+                this.setState({
+                    trackedIconContent: <p>Error</p>
+                })
+            }
+            
+            console.log("Track");
+        }
+
+        if (trackIconOption === "unTrack") {
+            this.setState({
+                trackedIconContent: <div onClick={() => this.handleBookmark("Track")}><Bookmark28Regular/></div>
+            })
+            console.log("unTrack");
+        }
     }
+    
+    async requestTrack() {
+        const url = 'surplusitem/Track';
+        const data = {
+            Username: Cookies.get('username'),
+            Sid: this.state.selectedItem["Surplus Number"],
+        };
+
+        const response = await fetch(url, {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Access-Control-Allow-Credentials': 'true',
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify(data),
+
+        });
+
+        console.log(response);
+        return response;
+    }
+
     handlePurchase = async () => {
         if (Cookies.get('username') == null) {
             alert("Please sign in first to make a purchase");
             this.toggleItemCardModal();
         } else {
+            // TODO: Do sth about the return value
             await this.requestPurchase();
 
             alert("Purchase success");
@@ -223,14 +284,14 @@ export class Home extends Component {
                                 <p className="itemTitle">{category}</p>
                                 <p className="itemCount">{parseInt(availableCount.toString())}</p>
                             </div>
-                            <ProgressBar className="shadow" min={0} max={count} now={parseInt(availableCount.toString())}/>
+                            <ProgressBar className="shadow" min={0} max={count}
+                                         now={parseInt(availableCount.toString())}/>
                         </div>
                     );
                 })}
             </>
         );
-        
- 
+
 
     }
 
@@ -272,6 +333,56 @@ export class Home extends Component {
         return <>{cards}</>;
     }
 
+    async renderTrackedIcon() {
+        this.setState({
+            trackedIconContent: <Spinner
+                variant="dark"
+                as="span"
+                animation="border"
+                size="md"
+                role="status"
+                aria-hidden="true"
+            />
+        });
+
+
+        // Just for coolness, don't need to have setTimeout
+        setTimeout(async () => {
+            const url = 'surplusitem/ItemTrackCheck';
+            const data = {
+                Username: Cookies.get('username'),
+                Sid: this.state.selectedItem["Surplus Number"],
+            };
+
+            const response = await fetch(url, {
+                credentials: 'include',
+                method: 'POST',
+                headers: {
+                    'Access-Control-Allow-Credentials': 'true',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                body: JSON.stringify(data),
+
+            });
+
+            if (response.status === 200) {
+                this.setState({
+                    trackedIconContent: <div onClick={() => this.handleBookmark("unTrack")}><Bookmark28Filled/></div>
+                })
+
+            } else if (response.status === 404) {
+                this.setState({
+                    trackedIconContent: <div onClick={() => this.handleBookmark("Track")}><Bookmark28Regular/></div>
+                });
+            } else {
+                this.setState({trackedIconContent: <p>Error</p>});
+            }
+        }, 600);
+
+
+    }
+
 
     render() {
         let displaySectionContents = this.state.loading
@@ -299,7 +410,8 @@ export class Home extends Component {
 
 
         return (<>
-                <Container className="displaySection rounded shadow d-flex justify-content-around align-content-around flex-wrap">
+                <Container
+                    className="displaySection rounded shadow d-flex justify-content-around align-content-around flex-wrap">
 
                     {displaySectionContents}
                     {/*Maximum display: 10*/}
@@ -357,7 +469,8 @@ export class Home extends Component {
                                         <DropdownItem onClick={() => this.handleSortClick("priceHighToLow")}>Price High
                                             -
                                             Low</DropdownItem>
-                                        <DropdownItem onClick={() => this.handleSortClick("ableToBuy")}>Able to buy now</DropdownItem>
+                                        <DropdownItem onClick={() => this.handleSortClick("ableToBuy")}>Able to buy
+                                            now</DropdownItem>
                                     </DropdownMenu>
                                 </Dropdown>
 
@@ -377,14 +490,13 @@ export class Home extends Component {
                 <Modal isOpen={this.state.modalOpen} toggle={this.toggleItemCardModal} fade={false}>
                     <ModalHeader toggle={this.toggleItemCardModal}>
                         Confirm purchase
-                        <div onClick={this.handleBookmark}><Bookmark28Regular /></div>
+                        {this.state.trackedIconContent}
                     </ModalHeader>
-                    
+
                     <ModalBody>
                         Are you sure you want to continue purchase?
                     </ModalBody>
                     <ModalFooter className="purchaseModal">
-                        <Button className="btn-primary" type="button" data-dismiss="modal" onClick={this.toggleItemCardModal}>Track</Button>
                         <Button type="button" data-dismiss="modal" onClick={this.toggleItemCardModal}>Close</Button>
                         <Button type="button" className="loginSignUpBtn" onClick={this.handlePurchase}>Purchase</Button>
                     </ModalFooter>
@@ -400,7 +512,7 @@ export class Home extends Component {
 
         const categoryCounts = {};
         const categoryAvailableCounts = {};
-        
+
         data.forEach(item => {
             const category = item["Category"];
             const qty = item["Qty"];
@@ -413,16 +525,16 @@ export class Home extends Component {
 
         const categoryEntries = Object.entries(categoryCounts);
         const categoryAvailableEntries = Object.entries(categoryAvailableCounts);
-        
+
         categoryEntries.sort((a, b) => b[1] - a[1]);
         categoryAvailableEntries.sort((a, b) => b[1] - a[1]);
-        
+
         const topCategories = categoryEntries.slice(0, 10);
         const topAvailableCategories = categoryAvailableEntries.slice(0, 10);
-        
+
         const topCategoryCounts = Object.fromEntries(topCategories);
         const topCategoryAvailableCounts = Object.fromEntries(topAvailableCategories);
-        
+
         console.log(topCategoryCounts);
         console.log(topCategoryAvailableCounts);
         this.setState({
@@ -463,7 +575,7 @@ export class Home extends Component {
                 </Card>
             );
         }
-        
+
     };
 
 }

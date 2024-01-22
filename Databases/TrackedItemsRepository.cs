@@ -27,6 +27,11 @@ public class TrackedItemsRepository : ITrackedItemsRepository
         _trackedItemsContext.TrackedItems.Add(trackedItem);
         trackedItem.Tid = _trackedItemsContext.SaveChanges();
 
-        return null;
+        return trackedItem;
+    }
+
+    public bool TrackCheck(string surplusNumber, int uid)
+    {
+        return _trackedItemsContext.TrackedItems.Any(item => item.Sid == surplusNumber && item.Uid == uid);
     }
 }
