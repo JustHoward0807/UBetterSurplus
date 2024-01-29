@@ -1,7 +1,11 @@
 # UBetterSurplus
+- [ ] Provide Figma link
+- [ ] Provide images
+- [ ] Public the Projects
+- [ ] Provide small demo
 
 ## Overview
-This repository contains the source code for a dynamic and efficient Web Application developed using _React_, _JavaScript_, _C#_, _Entity Framework Core_, and _ASP.NET Core_. The application features a user interface crafted through _Figma_ and _Fluent UI Design_ principles.
+This repository contains the source code for a dynamic and efficient Web Application developed using _React_, _JavaScript_, _C#_, _Entity Framework Core_, and _ASP.NET Core_. The application features a user interface crafted through _Figma_ and [_Fluent UI Design_](https://fluent2.microsoft.design/) principles.
 
 ### Why this website or Where the idea come from?
 As an international student, we often need to buy cheap stuff such as furniture, monitor or a desk. [University of Utah Surplus Store](https://fbs.admin.utah.edu/surplus/) is typically the first place that comes to mind for such purchases.
