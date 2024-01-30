@@ -18,6 +18,10 @@ public class PurchaseRepository : IPurchaseRepository
 
     public PurchaseHistory? Purchase(string surplusNumber, int uid)
     {
+        if (_productContext.SurplusItems.FirstOrDefault(item => item.SurplusNumber == surplusNumber)!.Qty - 1 < 0)
+        {
+            return null;
+        }
         try
         {
             var purchase = new PurchaseHistory

@@ -31,8 +31,29 @@
     overflow: hidden;
 }
 
+@media screen and (max-width: 1195px) {
+    .item {
+        width: 200px;
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    @media screen and (max-width: 446px) {
+        .itemBox {
+            margin-top: 10px !important;
+            margin-bottom: 10px !important;
+        }
+        .displaySection {
+            overflow-y: scroll !important;
+            height: fit-content;
+        }
+    }
+    
+}
+
 .itemBox {
     /*background-color: yellow;*/
+    
     /*padding: 10px;*/
     margin: auto;
     height: fit-content;
@@ -97,10 +118,10 @@
     border-width: 3px;
 
 
-
 }
+
 .LoggedUserMenu:hover {
-    
+
     color: blue !important;
     --bs-dropdown-link-hover-color: var(--main-red) !important;
     --bs-dropdown-link-hover-bg: var(--main-red) !important;
@@ -128,6 +149,15 @@
 
 .filterSection {
     /*background-color: pink;*/
+}
+
+@media screen and (max-width: 550px) {
+    .filterColumn {
+        /*background-color: blue;*/
+        display: flex;
+        justify-content: center;
+        padding-left: 0;
+    }
 }
 
 .dropdown-toggle {
@@ -183,7 +213,7 @@
     height: fit-content;
     background-color: var(--mainBgColor);
     padding: 10px;
-    
+
 }
 
 .card-footer {
@@ -197,10 +227,11 @@
 
 .price-footer {
     background-color: var(--main-red);
-    
+
 }
+
 .price-footer.unknown:hover {
-    background-color: grey; 
+    background-color: grey;
 }
 
 .card-body {
@@ -214,7 +245,8 @@
     font-size: 10px;
     color: rgba(255, 255, 255, 0.6);
 }
-.card-text  {
+
+.card-text {
     font-size: 10px;
     color: rgba(255, 255, 255, 0.6);
 }

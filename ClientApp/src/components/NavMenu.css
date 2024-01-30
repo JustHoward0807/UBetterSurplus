@@ -81,15 +81,21 @@
 .hideInvalid {
     display: none;
 }
+
+@media (max-width: 575px) {
+    .navbar-nav .nav-item:first-child {
+        display: none !important;
+    }
+    .collapse:not(.show) {
+         display: block !important;   
+    }
+}
+
 /*html {
   font-size: 20px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
+
 
 .box-shadow {
   box-shadow: 0 .25rem .,75rem rgba(0, 0, 0, .05);

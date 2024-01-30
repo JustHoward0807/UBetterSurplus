@@ -49,9 +49,13 @@ export class History extends Component {
             )
         );
         return (
-            <Container className="itemSection rounded shadow d-flex flex-wrap justify-content-around">
+            <>
+                <h1>Item Bought: {this.state.purchasedItems.length}</h1>
+                <Container className="itemSection rounded shadow d-flex flex-wrap justify-content-around">
                 {itemCards}
             </Container>
+            </>
+
         );
     }
 

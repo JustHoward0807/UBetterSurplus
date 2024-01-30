@@ -107,9 +107,9 @@ export class Home extends Component {
                     aria-hidden="true"
                 />
             })
-            
+
             const requestTrack = await this.requestTrack();
-            
+
             if (requestTrack.status === 200) {
                 this.setState({
                     trackedIconContent: <div onClick={() => this.handleBookmark("unTrack")}><Bookmark28Filled/></div>
@@ -119,7 +119,7 @@ export class Home extends Component {
                     trackedIconContent: <p>Error</p>
                 })
             }
-            
+
             console.log("Track");
         }
 
@@ -130,7 +130,7 @@ export class Home extends Component {
             console.log("unTrack");
         }
     }
-    
+
     async requestTrack() {
         const url = 'surplusitem/Track';
         const data = {
@@ -162,7 +162,6 @@ export class Home extends Component {
             // TODO: Do sth about the return value
             await this.requestPurchase();
 
-            alert("Purchase success");
             window.location.reload();
         }
 
@@ -187,6 +186,13 @@ export class Home extends Component {
 
         });
 
+        if (response.status === 200) {
+            alert("Purchase success");
+        }
+
+        if (response.status === 400) {
+            alert("Purchase fail");
+        }
         console.log(response);
         return response;
     }

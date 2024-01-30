@@ -139,4 +139,49 @@ public class SurplusItemController : Controller
         }
     }
     
+    [HttpPost("UnTrack")]
+    public IActionResult UnTrack(TrackDto dto)
+    {
+        var uId = _userRepository.GetByUsername(dto.Username)!.Id;
+        var trackItem = _trackedItemsRepository.UnTrack(dto.Sid, uId);
+        if (trackItem == null)
+        {
+            return BadRequest(new { message = "Cannot UnTrack" });
+            
+        }
+        else
+        {
+            return Ok(new
+            {
+                message = "Item UnTracked"
+            });
+        }
+    }
+    
+    [HttpGet("TrackedItems")]
+    public IEnumerable<SurplusItem> GetTrackedItems()
+    {
+       
+        try
+        {
+            var jwt = Request.Cookies["jwt"];
+
+            var token = _jwtService.Verify(jwt!);
+            
+            var userId = int.Parse(token.Issuer);
+            
+            var user = _userRepository.GetById(userId);
+
+            var items = _trackedItemsRepository.GetTrackedItems(user.Id);
+            
+            return items;
+        }
+
+        catch (Exception)
+        {
+            return null!;
+        }
+        
+    }
+    
 }

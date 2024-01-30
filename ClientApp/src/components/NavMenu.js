@@ -20,7 +20,7 @@ export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
     async componentDidMount() {
-        
+
         await this.checkUser();
     }
 
@@ -68,7 +68,7 @@ export class NavMenu extends Component {
             passwordValidHint: "",
             passwordIncorrect: "",
         };
-        
+
 
     }
 
@@ -79,9 +79,9 @@ export class NavMenu extends Component {
     }
 
     toggleSignInSignUpModal = async () => {
-            this.setState({
-                modalOpen: !this.state.modalOpen
-            });
+        this.setState({
+            modalOpen: !this.state.modalOpen
+        });
     }
 
     handleUsernameInputChange = (e) => {
@@ -191,18 +191,15 @@ export class NavMenu extends Component {
     render() {
         return (
             <header>
-                <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white shadow mb-3"
+                <Navbar className="  ng-white shadow mb-3 navbar-expand-sm navbar-toggleable-sm"
                         container>
                     <NavbarBrand href="/">UBetterSurplus</NavbarBrand>
-                    <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
+                    {/*<NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>*/}
                     <Collapse className="d-sm-inline-flex " isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav">
                             <NavItem>
                                 <NavLink tag={Link} className="text-light nav-btn" to="/counter">ABOUT</NavLink>
                             </NavItem>
-                            {/*<NavItem>*/}
-                            {/*    <NavLink tag={Link} className="text-light nav-btn" to="/fetch-data">LOG</NavLink>*/}
-                            {/*</NavItem>*/}
 
                             <NavItem>
                                 {this.state.isLogin ? this.LoggedUserDropDown() :
@@ -271,8 +268,8 @@ export class NavMenu extends Component {
 
                 <Dropdown.Menu className="LoggedUserMenu">
                     <Dropdown.Item className="LoggedUserItem" href="/history">History</Dropdown.Item>
-                    <Dropdown.Item className="LoggedUserItem" href="/trackedItems" >Tracked Items</Dropdown.Item>
-                    <Dropdown.Item  onClick={this.handleSignOut} className="LoggedUserItem">Logout</Dropdown.Item>
+                    <Dropdown.Item className="LoggedUserItem" href="/trackedItems">Tracked Items</Dropdown.Item>
+                    <Dropdown.Item onClick={this.handleSignOut} className="LoggedUserItem">Logout</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         );
