@@ -1,7 +1,7 @@
 import { Counter } from "./components/Counter";
-import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import {History} from "./components/History";
+import TrackedItems from "./components/TrackedItems";
 
 const AppRoutes = [
   {
@@ -13,12 +13,12 @@ const AppRoutes = [
     element: <Counter />
   },
   {
-    path: '/fetch-data',
-    element: <FetchData />
-  },
-  {
     path: '/history',
     element: <History />
+  },
+  {
+    path: '/trackedItems',
+    element: <TrackedItems />
   }
 ];
 

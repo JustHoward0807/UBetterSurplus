@@ -31,8 +31,29 @@
     overflow: hidden;
 }
 
+@media screen and (max-width: 1195px) {
+    .item {
+        width: 200px;
+        height: fit-content;
+        overflow: hidden;
+    }
+
+    @media screen and (max-width: 446px) {
+        .itemBox {
+            margin-top: 10px !important;
+            margin-bottom: 10px !important;
+        }
+        .displaySection {
+            overflow-y: scroll !important;
+            height: fit-content;
+        }
+    }
+    
+}
+
 .itemBox {
     /*background-color: yellow;*/
+    
     /*padding: 10px;*/
     margin: auto;
     height: fit-content;
@@ -97,10 +118,10 @@
     border-width: 3px;
 
 
-
 }
+
 .LoggedUserMenu:hover {
-    
+
     color: blue !important;
     --bs-dropdown-link-hover-color: var(--main-red) !important;
     --bs-dropdown-link-hover-bg: var(--main-red) !important;
@@ -113,6 +134,12 @@
 
 /* filter section */
 
+.modal-title {
+    justify-content: space-between;
+    width: 100%;
+    display: flex;
+}
+
 .filterColumn {
     height: fit-content;
     overflow: visible;
@@ -122,6 +149,15 @@
 
 .filterSection {
     /*background-color: pink;*/
+}
+
+@media screen and (max-width: 550px) {
+    .filterColumn {
+        /*background-color: blue;*/
+        display: flex;
+        justify-content: center;
+        padding-left: 0;
+    }
 }
 
 .dropdown-toggle {
@@ -172,11 +208,12 @@
 
 /* Item section*/
 
+
 .itemSection {
     height: fit-content;
     background-color: var(--mainBgColor);
     padding: 10px;
-    
+
 }
 
 .card-footer {
@@ -185,7 +222,16 @@
     font-family: "Orbitron", sans-serif;
     padding: 0;
     font-size: 14px;
-    
+    cursor: pointer;
+}
+
+.price-footer {
+    background-color: var(--main-red);
+
+}
+
+.price-footer.unknown:hover {
+    background-color: grey;
 }
 
 .card-body {
@@ -195,10 +241,14 @@
     height: fit-content;
 }
 
+.card-subtitle {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
 .card-text {
     font-size: 10px;
     color: rgba(255, 255, 255, 0.6);
-    
 }
 
 .card-title {
@@ -217,10 +267,9 @@
 
 .card {
     width: 320px;
-    height: 90px;
+    height: 95px;
     background-color: transparent;
     --bs-card-inner-border-radius: calc(4px);
-    cursor: pointer;
 }
 
 .btn-close {

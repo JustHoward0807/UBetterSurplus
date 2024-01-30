@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
+using MySql.EntityFrameworkCore.Extensions;
 // using MySql.Data.MySqlClient;
 using UBetterSurplus.Databases;
 using UBetterSurplus.Helpers;
+using UBetterSurplus.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +16,18 @@ var conStrBuilder = new MySqlConnectionStringBuilder(
 {
     Password = builder.Configuration["DbPassword"]
 };
+
+
 builder.Services.AddCors(); 
+builder.Services.AddDbContext<ProductContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
 builder.Services.AddDbContext<UserContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
+builder.Services.AddDbContext<PurchaseHistoryContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
+builder.Services.AddDbContext<TrackedItemsContext>(opt => opt.UseMySQL(conStrBuilder.GetConnectionString(true)));
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<ITrackedItemsRepository, TrackedItemsRepository>();
 builder.Services.AddScoped<JwtService>();
 
 var app = builder.Build();
@@ -41,9 +52,17 @@ app.UseRouting();
 
 
 
+// app.MapControllerRoute(
+//     name: "default",
+//     pattern: "{controller}/{action=Index}/{id?}");
+
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+    name: "surplusitem",
+    pattern: "surplusitem/{controller=SurplusItem}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "auth",
+    pattern: "api/{controller=Auth}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
 

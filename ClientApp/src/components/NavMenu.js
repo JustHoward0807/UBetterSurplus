@@ -20,13 +20,13 @@ export class NavMenu extends Component {
     static displayName = NavMenu.name;
 
     async componentDidMount() {
-        
+
         await this.checkUser();
     }
 
     async checkUser() {
         try {
-            const url = 'http://localhost:5064/api/User';
+            const url = 'auth/User';
 
             const response = await fetch(url, {
                 credentials: 'include',
@@ -67,9 +67,8 @@ export class NavMenu extends Component {
             usernameValidHint: "",
             passwordValidHint: "",
             passwordIncorrect: "",
-            usernameLogged: ''
         };
-        
+
 
     }
 
@@ -80,14 +79,9 @@ export class NavMenu extends Component {
     }
 
     toggleSignInSignUpModal = async () => {
-        if (this.state.isLogin) {
-            await this.handleSignOut();
-        } else {
-            this.setState({
-                modalOpen: !this.state.modalOpen
-            });
-        }
-
+        this.setState({
+            modalOpen: !this.state.modalOpen
+        });
     }
 
     handleUsernameInputChange = (e) => {
@@ -108,7 +102,7 @@ export class NavMenu extends Component {
     handleSignOut = async () => {
 
         // TODO: Test it with when no cookie jwt is found
-        const url = 'http://localhost:5064/api/Logout';
+        const url = 'auth/Logout';
         const response = await fetch(url, {
             credentials: 'include',
             method: 'POST',
@@ -122,7 +116,7 @@ export class NavMenu extends Component {
 
         console.log(response);
         Cookies.remove('username');
-        window.location.reload();
+        window.location.href = '/';
     }
 
     handleSignIn = async () => {
@@ -172,7 +166,7 @@ export class NavMenu extends Component {
     }
 
     async requestUserResult(username, password) {
-        const url = 'http://localhost:5064/api/RegisterOrLogin';
+        const url = 'auth/RegisterOrLogin';
         const data = {
             Name: username,
             Password: password,
@@ -197,25 +191,22 @@ export class NavMenu extends Component {
     render() {
         return (
             <header>
-                <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white shadow mb-3"
+                <Navbar className="  ng-white shadow mb-3 navbar-expand-sm navbar-toggleable-sm"
                         container>
                     <NavbarBrand href="/">UBetterSurplus</NavbarBrand>
-                    <NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>
+                    {/*<NavbarToggler onClick={this.toggleNavbar} className="mr-2"/>*/}
                     <Collapse className="d-sm-inline-flex " isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav">
                             <NavItem>
                                 <NavLink tag={Link} className="text-light nav-btn" to="/counter">ABOUT</NavLink>
                             </NavItem>
-                            {/*<NavItem>*/}
-                            {/*    <NavLink tag={Link} className="text-light nav-btn" to="/fetch-data">LOG</NavLink>*/}
-                            {/*</NavItem>*/}
 
                             <NavItem>
                                 {this.state.isLogin ? this.LoggedUserDropDown() :
                                     <Button color="link" className="text-light nav-btn"
                                             onClick={this.toggleSignInSignUpModal}
                                             data-toggle="modal">
-                                        {this.state.isLogin ? Cookies.get('username') + " !" : "LOG"}
+                                        LOG
                                     </Button>
                                 }
                             </NavItem>
@@ -277,8 +268,8 @@ export class NavMenu extends Component {
 
                 <Dropdown.Menu className="LoggedUserMenu">
                     <Dropdown.Item className="LoggedUserItem" href="/history">History</Dropdown.Item>
-                    <Dropdown.Item className="LoggedUserItem" href="/" >Tracked Items</Dropdown.Item>
-                    <Dropdown.Item  onClick={this.toggleSignInSignUpModal} className="LoggedUserItem">Logout</Dropdown.Item>
+                    <Dropdown.Item className="LoggedUserItem" href="/trackedItems">Tracked Items</Dropdown.Item>
+                    <Dropdown.Item onClick={this.handleSignOut} className="LoggedUserItem">Logout</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         );

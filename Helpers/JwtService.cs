@@ -7,6 +7,7 @@ namespace UBetterSurplus.Helpers;
 public class JwtService
 {
     private readonly string _secureKey;
+
     // Getting secret key for jwt service
     public JwtService(IConfiguration config)
     {
@@ -19,7 +20,8 @@ public class JwtService
         var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
         var header = new JwtHeader(credentials);
 
-        var payload = new JwtPayload(id.ToString(), null, null, null, DateTime.Today.AddDays(1));
+        var payload = new JwtPayload(id.ToString(), null, null, null, DateTime.MaxValue);
+        
         var securityToken = new JwtSecurityToken(header, payload);
 
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
@@ -37,6 +39,6 @@ public class JwtService
             ValidateAudience = false
         }, out var validatedToken);
 
-        return (JwtSecurityToken) validatedToken;
+        return (JwtSecurityToken)validatedToken;
     }
 }

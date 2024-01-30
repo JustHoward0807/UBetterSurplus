@@ -5,14 +5,23 @@ namespace UBetterSurplus.Databases;
 public class UserRepository : IUserRepository
 {
     private readonly UserContext _context;
-    public UserRepository(UserContext context)
+    private readonly ILogger<UserRepository> _logger;
+    public UserRepository(UserContext context,  ILogger<UserRepository> logger)
     {
         _context = context;
+        _logger = logger;
     }
+    
     public User Create(User? user)
     {
-        _context.Users.Add(user!);
-        user!.Id = _context.SaveChanges();
+        // _context.Users.Add(user!);
+        // user!.Id = _context.SaveChanges();
+        // return user;
+        
+        var entityEntry = _context.Users.Add(user);
+        _context.SaveChanges();
+        var generatedId = (int)entityEntry.Property("Id").CurrentValue!;
+        user.Id = generatedId;
         return user;
     }
     

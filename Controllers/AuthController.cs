@@ -6,7 +6,8 @@ using UBetterSurplus.Models;
 
 namespace UBetterSurplus.Controllers;
 
-[Route("api")]
+// [Route("api")]
+[Route("[controller]")]
 [ApiController]
 public class AuthController : Controller
 {
@@ -35,6 +36,7 @@ public class AuthController : Controller
             };
 
             var userCreated = _repository.Create(user);
+            Console.WriteLine(userCreated.Id);
             var _jwt = _jwtService.Generate(userCreated.Id);
 
             Response.Cookies.Append("jwt", _jwt, new CookieOptions
@@ -91,7 +93,11 @@ public class AuthController : Controller
 
             var user = _repository.GetById(userId);
 
-            return Ok(user);
+            // return Ok(user);
+            return Ok(new
+            {
+                message = "Success authorize"
+            });
         }
 
         catch (Exception)
