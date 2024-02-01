@@ -89,11 +89,11 @@ public class AuthController : Controller
 
             var token = _jwtService.Verify(jwt!);
 
-            int userId = int.Parse(token.Issuer);
+            var userId = int.Parse(token.Issuer);
 
             var user = _repository.GetById(userId);
 
-            // return Ok(user);
+            
             return Ok(new
             {
                 message = "Success authorize"
