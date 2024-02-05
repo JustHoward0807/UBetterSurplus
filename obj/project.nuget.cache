@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Abi1T6jFK08KDpK4+cckZxM9I9WQHC+JgGJZtUcilUFb79CLyluqCB1tSVfxI6He2wdBtBaAIPK7xPSJAwgzrA==",
+  "dgSpecHash": "8hvJtCIUYtsG5uTLR1YOn1TZtz+AdQ04Gzhm/23KGkUBKgvyWsnZiYg4iiIzPwt9/MFxr92T7VI3yFTDmiIwNg==",
   "success": true,
   "projectFilePath": "/Users/howard/Documents/Github/UBetterSurplus/UBetterSurplus.csproj",
   "expectedPackageFiles": [
@@ -20,6 +20,7 @@
     "/Users/howard/.nuget/packages/microsoft.entityframeworkcore.abstractions/7.0.9/microsoft.entityframeworkcore.abstractions.7.0.9.nupkg.sha512",
     "/Users/howard/.nuget/packages/microsoft.entityframeworkcore.analyzers/7.0.9/microsoft.entityframeworkcore.analyzers.7.0.9.nupkg.sha512",
     "/Users/howard/.nuget/packages/microsoft.entityframeworkcore.design/7.0.9/microsoft.entityframeworkcore.design.7.0.9.nupkg.sha512",
+    "/Users/howard/.nuget/packages/microsoft.entityframeworkcore.inmemory/7.0.9/microsoft.entityframeworkcore.inmemory.7.0.9.nupkg.sha512",
     "/Users/howard/.nuget/packages/microsoft.entityframeworkcore.relational/7.0.9/microsoft.entityframeworkcore.relational.7.0.9.nupkg.sha512",
     "/Users/howard/.nuget/packages/microsoft.extensions.caching.abstractions/7.0.0/microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "/Users/howard/.nuget/packages/microsoft.extensions.caching.memory/7.0.0/microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
