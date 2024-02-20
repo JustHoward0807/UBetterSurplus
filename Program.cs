@@ -40,7 +40,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseCors(options => options
-    .WithOrigins(new [] {"https://localhost:44406", "http://localhost:3000", "http://localhost:5064"})
+    .WithOrigins(new [] {"https://localhost:44406", "http://localhost:3000", "http://localhost:5064", "https://localhost:7177"})
     .AllowCredentials()
     .AllowAnyMethod()
     .AllowAnyHeader() 
