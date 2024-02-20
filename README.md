@@ -39,3 +39,23 @@ Fluent UI Design,
 
 - Database:
 MySQL
+
+## Images & Showcase video
+
+### Home Page
+![Home Page](https://github.com/JustHoward0807/UBetterSurplus/blob/main/README_IMG/Home.png)
+
+### About Page
+![About Page](https://github.com/JustHoward0807/UBetterSurplus/blob/main/README_IMG/About.png)
+
+### History Page
+![History Page](https://github.com/JustHoward0807/UBetterSurplus/blob/main/README_IMG/History.png)
+
+### Tracked Page
+![Tracked Page](https://github.com/JustHoward0807/UBetterSurplus/blob/main/README_IMG/Tracked.png)
+
+### Showcase video
+<video width="640" height="360" controls>
+  <source src="[videos/project_video.mp4](https://github.com/JustHoward0807/UBetterSurplus/tree/main/README_IMG)" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
