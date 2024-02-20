@@ -1,0 +1,10 @@
+.aboutDisplaySection {
+    width: 90vw;
+    height: 70vh;
+}
+
+.imgCol {
+    width: 90vw;
+    height: 70vh;
+    align-items: center;
+}
