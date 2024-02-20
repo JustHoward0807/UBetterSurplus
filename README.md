@@ -1,8 +1,8 @@
 # UBetterSurplus
-- [ ] Provide Figma link
-- [ ] Provide images
-- [ ] Public the Projects
-- [ ] Provide small demo
+- [x] Provide Figma link
+- [x] Provide images
+- [x] Public the Projects
+- [x] Provide small demo
 
 ## Overview
 This repository contains the source code for a dynamic and efficient Web Application developed using _React_, _JavaScript_, _C#_, _Entity Framework Core_, and _ASP.NET Core_. The application features a user interface crafted through _Figma_ and [_Fluent UI Design_](https://fluent2.microsoft.design/) principles.
@@ -42,6 +42,9 @@ MySQL
 
 ## Images & Showcase video
 
+### Showcase video
+https://github.com/JustHoward0807/UBetterSurplus/assets/77046944/9e7f31a4-ee5e-49da-abf0-de11ee7d8d6c
+
 ### Home Page
 ![Home Page](https://github.com/JustHoward0807/UBetterSurplus/blob/main/README_IMG/Home.png)
 
@@ -54,8 +57,10 @@ MySQL
 ### Tracked Page
 ![Tracked Page](https://github.com/JustHoward0807/UBetterSurplus/blob/main/README_IMG/Tracked.png)
 
-### Showcase video
-<video width="640" height="360" controls>
-  <source src="[videos/project_video.mp4](https://github.com/JustHoward0807/UBetterSurplus/tree/main/README_IMG)" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+
+## Resources
+[Github Project](https://github.com/users/JustHoward0807/projects/1) (Keeping track of everything)
+
+[Figma](https://www.figma.com/file/qniLCnQtYLEU45rqeh9asD/Better-Surplus-List?type=design&node-id=0%3A1&mode=design&t=2EG2rO7Qn5Rr0Nfk-1) 
+
+
