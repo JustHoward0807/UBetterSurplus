@@ -2,6 +2,7 @@ import { Counter } from "./components/Counter";
 import { Home } from "./components/Home";
 import {History} from "./components/History";
 import TrackedItems from "./components/TrackedItems";
+import About from "./components/About";
 
 const AppRoutes = [
   {
@@ -19,6 +20,10 @@ const AppRoutes = [
   {
     path: '/trackedItems',
     element: <TrackedItems />
+  },
+  {
+    path: '/About',
+    element: <About />
   }
 ];
 

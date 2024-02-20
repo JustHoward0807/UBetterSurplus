@@ -198,7 +198,7 @@ export class NavMenu extends Component {
                     <Collapse className="d-sm-inline-flex " isOpen={!this.state.collapsed} navbar>
                         <ul className="navbar-nav">
                             <NavItem>
-                                <NavLink tag={Link} className="text-light nav-btn" to="/counter">ABOUT</NavLink>
+                                <NavLink tag={Link} className="text-light nav-btn" to="/About">ABOUT</NavLink>
                             </NavItem>
 
                             <NavItem>
